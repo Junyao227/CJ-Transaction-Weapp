@@ -1,0 +1,36 @@
+// 跑腿接单表
+{
+	"bsonType": "object",
+	"required": ["task_id", "receiver_id"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "接单ID，系统自动生成"
+		},
+		"task_id": {
+			"bsonType": "string",
+			"title": "任务ID",
+			"description": "关联的任务ID，来自任务表"
+		},
+		"receiver_id": {
+			"bsonType": "string",
+			"title": "接单用户ID",
+			"description": "接单用户的ID，指接单人"
+		},
+		"created_time": {
+			"bsonType": "date",
+			"title": "接单时间"
+		},
+		"del": {
+			"bsonType": "int",
+			"title": "逻辑删除",
+			"defaultValue": 0,
+			"enum": [{"text": "未删除", "value": 0}, {"text": "已删除", "value": 1}]
+		}
+	}
+}

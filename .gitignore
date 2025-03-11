@@ -1,0 +1,10 @@
+# 忽略 node_modules
+node_modules/
+# 忽略构建输出
+dist/
+unpackage/
+# 忽略 IDE 配置文件
+.hbuilderx/
+# 忽略日志和临时文件
+*.log
+*.tmp

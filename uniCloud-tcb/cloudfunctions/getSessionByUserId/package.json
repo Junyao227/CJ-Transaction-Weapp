@@ -1,0 +1,7 @@
+{
+  "name": "getSessionByUserId",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

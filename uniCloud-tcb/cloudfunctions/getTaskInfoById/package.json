@@ -1,0 +1,7 @@
+{
+  "name": "getTaskInfoById",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

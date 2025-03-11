@@ -1,0 +1,7 @@
+{
+  "name": "getUserCounts",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

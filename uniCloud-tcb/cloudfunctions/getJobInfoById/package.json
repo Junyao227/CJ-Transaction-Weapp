@@ -1,0 +1,7 @@
+{
+  "name": "getJobInfoById",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

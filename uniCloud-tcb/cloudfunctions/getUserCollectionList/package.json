@@ -1,0 +1,7 @@
+{
+  "name": "getUserCollectionList",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

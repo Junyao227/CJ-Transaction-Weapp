@@ -1,0 +1,7 @@
+{
+  "name": "getItemInfoById",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

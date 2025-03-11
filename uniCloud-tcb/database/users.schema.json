@@ -1,0 +1,206 @@
+// 用户信息基本表
+{
+	"bsonType": "object",
+	"required": [],
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"title": "用户ID",
+			"description": "用户ID",
+			"trim": "both"
+		},
+		"username": {
+			"bsonType": "string",
+			"title": "用户名",
+			"description": "用户名，不允许重复",
+			"trim": "both"
+		},
+		"password": {
+			"bsonType": "password",
+			"title": "密码",
+			"description": "密码，加密存储",
+			"trim": "both"
+		},
+		"password_secret_version": {
+			"bsonType": "int",
+			"title": "passwordSecret",
+			"description": "密码使用的passwordSecret版本"
+		},
+		"nickname": {
+			"bsonType": "string",
+			"title": "昵称",
+			"description": "用户昵称",
+			"trim": "both"
+		},
+		"shipping": {
+			"bsonType": "string",
+			"title": "收货地址",
+			"description": "收货地址",
+			"trim": "both"
+		},
+		"gender": {
+			"bsonType": "int",
+			"title": "性别",
+			"description": "用户性别：0 未知 1 男性 2 女性",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "未知",
+					"value": 0
+				},
+				{
+					"text": "男",
+					"value": 1
+				},
+				{
+					"text": "女",
+					"value": 2
+				}
+			]
+		},
+		"status": {
+			"bsonType": "int",
+			"description": "用户状态：0 正常 1 禁用 2 审核中 3 审核拒绝",
+			"title": "用户状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "正常",
+					"value": 0
+				},
+				{
+					"text": "禁用",
+					"value": 1
+				},
+				{
+					"text": "审核中",
+					"value": 2
+				},
+				{
+					"text": "审核拒绝",
+					"value": 3
+				}
+			]
+		},
+		"mobile": {
+			"bsonType": "string",
+			"title": "手机号码",
+			"description": "手机号码",
+			"pattern": "^\\+?[0-9-]{3,20}$",
+			"trim": "both"
+		},
+		"mobile_confirmed": {
+			"bsonType": "int",
+			"description": "手机号验证状态：0 未验证 1 已验证",
+			"title": "手机号验证状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "未验证",
+					"value": 0
+				},
+				{
+					"text": "已验证",
+					"value": 1
+				}
+			]
+		},
+		"avatar": {
+			"bsonType": "string",
+			"title": "头像地址",
+			"description": "头像地址",
+			"trim": "both"
+		},
+		"role": {
+			"bsonType": "array",
+			"title": "角色",
+			"description": "用户角色",
+			"enum": {
+				"collection": "uni-id-roles",
+				"field": "role_id as value, role_name as text"
+			},
+			"foreignKey": "uni-id-roles.role_id",
+			"permission": {
+				"write": false
+			}
+		},
+		"wx_openid": {
+			"bsonType": "string",
+			"description": "微信平台openid",
+			"trim": "both"
+		},
+		"comment": {
+			"bsonType": "string",
+			"title": "备注",
+			"description": "备注",
+			"trim": "both"
+		},
+		"province": {
+			"bsonType": "string",
+			"title": "省份",
+			"description": "身份",
+			"trim": "both"
+		},
+		"country": {
+			"bsonType": "string",
+			"title": "国家",
+			"description": "国家",
+			"trim": "both"
+		},
+		"city": {
+			"bsonType": "string",
+			"title": "城市",
+			"description": "城市",
+			"trim": "both"
+		},
+		"score": {
+			"bsonType": "int",
+			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义"
+		},
+		"register_date": {
+			"bsonType": "timestamp",
+			"description": "注册时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		},
+		"register_ip": {
+			"bsonType": "string",
+			"description": "注册时 IP 地址",
+			"forceDefaultValue": {
+				"$env": "clientIP"
+			}
+		},
+		"last_login_date": {
+			"bsonType": "timestamp",
+			"description": "最后登录时间"
+		},
+		"last_login_ip": {
+			"bsonType": "string",
+			"description": "最后登录时 IP 地址"
+		},
+		"token": {
+			"bsonType": "array",
+			"description": "用户token"
+		},
+		"inviter_uid": {
+			"bsonType": "array",
+			"description": "用户全部上级邀请者",
+			"trim": "both"
+		},
+		"invite_time": {
+			"bsonType": "timestamp",
+			"description": "受邀时间"
+		},
+		"my_invite_code": {
+			"bsonType": "string",
+			"description": "用户自身邀请码"
+		},
+		"failed_login_attempts": {
+			"bsonType": "string",
+			"description": "登录失败的次数",
+			"trim": "both"
+		}
+	},
+	"version": "1.0.3"
+}

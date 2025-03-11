@@ -1,0 +1,7 @@
+{
+  "name": "saveSecondItemsInfo",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

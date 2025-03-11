@@ -1,0 +1,7 @@
+{
+  "name": "uncollectItem",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

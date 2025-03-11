@@ -1,0 +1,7 @@
+{
+  "name": "transaction-api",
+  "dependencies": {
+    "ws-common": "file:../common/wx-common"
+  },
+  "extensions": {}
+}

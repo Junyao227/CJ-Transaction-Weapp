@@ -1,0 +1,50 @@
+{
+  "bsonType": "object",
+  "required": [],
+  "permission": {
+    "read": true,
+    "create": true,
+    "update": true,
+    "delete": true
+  },
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "user_id": {
+      "bsonType": "string",
+      "title": "用户ID",
+      "description": "用户ID，指发起收藏的用户"
+    },
+    "item_id": {
+      "bsonType": "string",
+      "title": "商品或任务ID",
+      "description": "商品或任务的ID，指被收藏的商品、兼职或跑腿任务"
+    },
+    "type": {
+      "bsonType": "int",
+      "description": "收藏类型：0 为二手商品，1 为兼职，2 为跑腿任务",
+      "title": "收藏类型",
+      "defaultValue": 0,
+      "enum": [
+        {
+          "text": "二手商品",
+          "value": 0
+        },
+        {
+          "text": "兼职",
+          "value": 1
+        },
+        {
+          "text": "跑腿任务",
+          "value": 2
+        }
+      ]
+    },
+    "created_at": {
+      "bsonType": "timestamp",
+      "description": "收藏时间"
+    }
+  },
+  "version": "1.0.3"
+}

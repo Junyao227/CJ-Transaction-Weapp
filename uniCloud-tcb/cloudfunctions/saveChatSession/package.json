@@ -1,0 +1,7 @@
+{
+  "name": "saveChatSession",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

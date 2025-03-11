@@ -1,0 +1,7 @@
+{
+  "name": "getChatMessageBySessionId",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

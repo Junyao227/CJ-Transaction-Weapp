@@ -1,0 +1,93 @@
+// 跑腿任务表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "标题",
+			"description": "标题",
+			"trim": "both"
+
+		},
+		"description": {
+			"bsonType": "string",
+			"title": "描述",
+			"description": "描述",
+			"trim": "both"
+		},
+		"reward": {
+			"bsonType": "double",
+			"title": "报酬",
+			"description": "报酬"
+		},
+
+		"pickup_location": {
+			"bsonType": "string",
+			"title": "取货地点",
+			"description": "取货地点",
+			"trim": "both"
+		},
+		"delivery_location": {
+			"bsonType": "string",
+			"title": "送达地点",
+			"description": "送达地点",
+			"trim": "both"
+		},
+		"publisher_id": {
+			"bsonType": "string",
+			"title": "发布者user_id",
+			"description": "发布者user_id",
+			"trim": "both"
+		},
+		"created_time": {
+			"bsonType": "date",
+			"title": "发布时间",
+			"description": "发布时间"
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "跑腿信息状态",
+			"description": "跑腿信息状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "待接单",
+					"value": 0
+				},
+				{
+					"text": "已接单",
+					"value": 1
+				},
+				{
+					"text": "已送达",
+					"value": 2
+				}
+			]
+		},
+		"del": {
+			"bsonType": "int",
+			"title": "逻辑删除",
+			"description": "逻辑删除",
+			"defaultValue": 0,
+			"enum": [
+				{
+					"text": "未删除",
+					"value": 0
+				},
+				{
+					"text": "已删除",
+					"value": 1
+				}
+			]
+		}
+	}
+}

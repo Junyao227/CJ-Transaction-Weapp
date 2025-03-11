@@ -1,0 +1,7 @@
+{
+  "name": "getTaskList",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

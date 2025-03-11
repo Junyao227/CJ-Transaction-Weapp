@@ -1,0 +1,119 @@
+// 二手商品订单表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"item_id": {
+			"bsonType": "string",
+			"title": "二手商品ID secondhand_items.schema中 _id",
+			"description": "二手商品ID secondhand_items.schema中 _id",
+			"trim": "both"
+		},
+		"publisher_id": {
+			"bsonType": "string",
+			"title": "发布者user_id",
+			"description": "发布者user_id",
+			"trim": "both"
+		},
+		"receive_id": {
+			"bsonType": "string",
+			"title": "二手买家user_id",
+			"description": "二手买家user_id",
+			"trim": "both"
+		},
+
+		"price": {
+			"bsonType": "double",
+			"title": "价格",
+			"description": "二手商品价格",
+			"defaultValue": 0
+		},
+		"count": {
+			"bsonType": "double",
+			"title": "商品数量",
+			"description": "商品数量",
+			"defaultValue": 0
+		},
+		"total_amount": {
+			"bsonType": "double",
+			"title": "总价格",
+			"description": "总价格",
+			"defaultValue": 0
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "交易状态",
+			"description": "交易状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "代付款",
+					"value": 0
+				},
+				{
+					"text": "已付款",
+					"value": 1
+				},
+				{
+					"text": "已发货",
+					"value": 2
+				}, {
+					"text": "已完成",
+					"value": 3
+				},
+				{
+					"text": "已取消",
+					"value": 4
+				}
+			]
+		},
+		"pay_time": {
+			"bsonType": "date",
+			"title": "付款时间",
+			"description": "付款时间"
+		},
+		"delivery_time": {
+			"bsonType": "date",
+			"title": "发货时间",
+			"description": "发货时间"
+		},
+		"completion_time": {
+			"bsonType": "date",
+			"title": "发货时间",
+			"description": "发货时间"
+		},
+		"created_time": {
+			"bsonType": "date",
+			"title": "交易创建时间",
+			"description": "交易创建时间"
+		},
+		"update_time": {
+			"bsonType": "date",
+			"title": "交易更新时间",
+			"description": "交易更新时间"
+		},
+		"del": {
+			"bsonType": "int",
+			"title": "逻辑删除",
+			"description": "逻辑删除",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "未删除",
+					"value": 0
+				},
+				{
+					"text": "已删除",
+					"value": 1
+				}
+			]
+		}
+	}
+}

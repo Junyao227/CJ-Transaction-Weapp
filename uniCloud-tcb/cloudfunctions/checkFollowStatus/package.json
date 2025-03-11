@@ -1,0 +1,7 @@
+{
+  "name": "checkFollowStatus",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

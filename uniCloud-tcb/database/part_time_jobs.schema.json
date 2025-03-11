@@ -1,0 +1,107 @@
+// 兼职信息基本表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "标题",
+			"description": "标题",
+			"trim": "both"
+
+		},
+		"description": {
+			"bsonType": "string",
+			"title": "描述",
+			"description": "描述",
+			"trim": "both"
+		},
+		"salary": {
+			"bsonType": "double",
+			"title": "薪资",
+			"description": "薪资"
+		},
+		"job_type": {
+			"bsonType": "int",
+			"title": "工作类型",
+			"description": "工作类型",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "日结",
+					"value": 0
+				},
+				{
+					"text": "周结",
+					"value": 1
+				}, {
+					"text": "月结",
+					"value": 2
+				}
+			]
+		},
+		"location": {
+			"bsonType": "string",
+			"title": "兼职工作地点",
+			"description": "兼职工作地点",
+			"trim": "both"
+		},
+		"company": {
+			"bsonType": "string",
+			"title": "公司",
+			"description": "公司",
+			"trim": "both"
+		},
+		"publisher_id": {
+			"bsonType": "string",
+			"title": "发布者user_id",
+			"description": "发布者user_id",
+			"trim": "both"
+		},
+		"created_time": {
+			"bsonType": "date",
+			"title": "发布时间",
+			"description": "发布时间"
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "兼职信息状态",
+			"description": "兼职信息状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "招聘中",
+					"value": 0
+				},
+				{
+					"text": "已结束",
+					"value": 1
+				}
+			]
+		},
+		"del": {
+			"bsonType": "int",
+			"title": "逻辑删除",
+			"description": "逻辑删除",
+			"defaultValue": 0,
+			"enum": [
+				{
+					"text": "未删除",
+					"value": 0
+				},
+				{
+					"text": "已删除",
+					"value": 1
+				}
+			]
+		}
+
+	}
+}

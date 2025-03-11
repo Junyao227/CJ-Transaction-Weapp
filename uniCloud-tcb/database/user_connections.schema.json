@@ -1,0 +1,28 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"userId": {
+			"description": "用户ID",
+			"bsonType": "string"
+		},
+		"connectionId": {
+			"description": "连接ID",
+			"bsonType": "string"
+		},
+		"connectedAt": {
+			"description": "连接时间",
+			"bsonType": "date"
+		}
+	}
+}

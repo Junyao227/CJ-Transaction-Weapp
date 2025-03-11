@@ -1,0 +1,7 @@
+{
+  "name": "checkCollectStatus",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

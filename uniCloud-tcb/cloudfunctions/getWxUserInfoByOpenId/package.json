@@ -1,0 +1,7 @@
+{
+  "name": "getWxUserInfoByOpenId",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

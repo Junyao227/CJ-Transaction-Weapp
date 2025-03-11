@@ -1,0 +1,7 @@
+{
+  "name": "getFollowedUsers",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

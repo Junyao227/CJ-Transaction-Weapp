@@ -1,0 +1,206 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页"
+			}
+		},
+		{
+			"path": "pages/publish/publish",
+			"style": {
+				"navigationBarTitleText": "发布"
+			}
+		},
+		{
+			"path": "pages/message/message",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path" : "components/chat/card",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		}
+	],
+	"subPackages": [{
+			"root": "pages_publish",
+			"pages": [
+
+				{
+					"path": "second-hand-item/second-hand-item",
+					"style": {
+						"navigationBarTitleText": "二手商品发布"
+					}
+				},
+				{
+					"path": "part-time-job/part-time-job",
+					"style": {
+						"navigationBarTitleText": "兼职发布"
+					}
+				},
+				{
+					"path": "errand-task/errand-task",
+					"style": {
+						"navigationBarTitleText": "跑腿任务发布"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/item",
+			"pages": [{
+					"path": "itemDetail/itemDetail",
+					"style": {
+						"navigationBarTitleText": "商品详情"
+					}
+				},
+				{
+					"path": "chat/chat",
+					"style": {
+						"navigationBarTitleText": "二手商品沟通"
+					}
+				},
+				{
+					"path": "purchase/purchase",
+					"style": {
+						"navigationBarTitleText": "购买"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/job",
+			"pages": [{
+				"path": "jobDetail/jobDetail",
+				"style": {
+					"navigationBarTitleText": "兼职详情"
+				}
+			},
+			{
+				"path" : "chat/chat",
+				"style" : 
+				{
+					"navigationBarTitleText" : "兼职沟通"
+				}
+			}]
+		},
+		{
+			"root": "pages/task",
+			"pages": [{
+				"path": "taskDetail/taskDetail",
+				"style": {
+					"navigationBarTitleText": "跑腿任务详情"
+				}
+			},
+			{
+				"path" : "chat/chat",
+				"style" : 
+				{
+					"navigationBarTitleText" : ""
+				}
+			}]
+		},
+		{
+			"root": "pages_mine",
+			"pages": [{
+					"path": "aboutUs/aboutUs",
+					"style": {
+						"navigationBarTitleText": "关于我们"
+					}
+				},
+				{
+					"path": "secondItem/published/published",
+					"style": {
+						"navigationBarTitleText": "我发布的商品"
+					}
+				},
+				{
+					"path": "secondItem/sold/sold",
+					"style": {
+						"navigationBarTitleText": "我卖出的商品"
+					}
+				},
+				{
+					"path": "secondItem/myBuy/myBuy",
+					"style": {
+						"navigationBarTitleText": "我购买的商品"
+					}
+				},
+				{
+					"path": "list/fan/fan",
+					"style": {
+						"navigationBarTitleText": "我的粉丝"
+					}
+				},
+				{
+					"path": "list/follow/follow",
+					"style": {
+						"navigationBarTitleText": "我的关注"
+					}
+				},
+				{
+					"path": "list/collect/collect",
+					"style": {
+						"navigationBarTitleText": "我的收藏"
+					}
+				}
+			]
+		}
+	],
+	"tabBar": {
+		"color": "#8c8c8c",
+		"selectedColor": "#ee0a24",
+		"borderStyle": "white",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/index/index",
+				"text": "首页",
+				"iconPath": "static/images/tabbar/index.png",
+				"selectedIconPath": "static/images/tabbar/index-active.png"
+			},
+			{
+				"pagePath": "pages/publish/publish",
+				"text": "发布",
+				"iconPath": "static/images/tabbar/publish.png",
+				"selectedIconPath": "static/images/tabbar/publish-active.png"
+			},
+			{
+				"pagePath": "pages/message/message",
+				"text": "消息",
+				"iconPath": "static/images/tabbar/message.png",
+				"selectedIconPath": "static/images/tabbar/message-active.png"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"text": "我的",
+				"iconPath": "static/images/tabbar/mine.png",
+				"selectedIconPath": "static/images/tabbar/mine-active.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {}
+}

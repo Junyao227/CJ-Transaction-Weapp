@@ -1,0 +1,110 @@
+{
+	"bsonType": "object",
+	"required": ["session_id", "sender_id", "receiver_id", "content", "type"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "消息ID，系统自动生成"
+		},
+		"session_id": {
+			"bsonType": "string",
+			"title": "会话ID",
+			"description": "关联的会话ID",
+			"trim": "both"
+		},
+		"sender_id": {
+			"bsonType": "string",
+			"title": "发送者用户ID",
+			"description": "发送者用户ID",
+			"trim": "both"
+		},
+		"receiver_id": {
+			"bsonType": "string",
+			"title": "接收者用户ID",
+			"description": "接收者用户ID",
+			"trim": "both"
+		},
+		"content": {
+			"bsonType": "string",
+			"title": "消息内容",
+			"description": "消息内容",
+			"trim": "both"
+		},
+		"type": {
+			"bsonType": "int",
+			"title": "消息类型",
+			"description": "消息类型：1二手商品 2兼职 3跑腿",
+			"defaultValue": 1,
+			"enum": [
+				{
+					"text": "二手商品",
+					"value": 1
+				},
+				{
+					"text": "兼职",
+					"value": 2
+				},
+				{
+					"text": "跑腿",
+					"value": 3
+				}
+			]
+		},
+		"related_item_id": {
+			"bsonType": "string",
+			"title": "关联ID",
+			"description": "关联的商品、兼职或跑腿任务ID",
+			"trim": "both"
+		},
+		"message_type": {
+			"bsonType": "int",
+			"title": "消息内容类型",
+			"description": "消息内容类型：1文本 2图片 3语音 4视频",
+			"defaultValue": 1,
+			"enum": [
+				{
+					"text": "文本",
+					"value": 1
+				},
+				{
+					"text": "图片",
+					"value": 2
+				},
+				{
+					"text": "语音",
+					"value": 3
+				},
+				{
+					"text": "视频",
+					"value": 4
+				}
+			]
+		},
+		"is_read": {
+			"bsonType": "int",
+			"title": "是否已读",
+			"description": "消息是否已读",
+			"defaultValue": 0,
+			"enum": [
+				{
+					"text": "未读",
+					"value": 0
+				},
+				{
+					"text": "已读",
+					"value": 1
+				}
+			]
+		},
+		"created_at": {
+			"bsonType": "date",
+			"title": "发送时间",
+			"description": "消息发送时间"
+		}
+	}
+}

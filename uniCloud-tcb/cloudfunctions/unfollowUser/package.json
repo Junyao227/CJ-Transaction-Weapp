@@ -1,0 +1,7 @@
+{
+  "name": "unfollowUser",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

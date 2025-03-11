@@ -1,0 +1,60 @@
+{
+  "users": {
+    "bsonType": "object",
+    "required": ["openid", "nickname", "avatar"],
+    "properties": {
+      "_id": {"type": "string"},
+      "openid": {"type": "string"},
+      "nickname": {"type": "string"},
+      "avatar": {"type": "string"},
+      "created_at": {"type": "timestamp"},
+      "points": {"type": "int"},
+      "fans_count": {"type": "int"},
+      "follow_count": {"type": "int"}
+    }
+  },
+  "goods": {
+    "bsonType": "object",
+    "required": ["title", "price", "user_id"],
+    "properties": {
+      "_id": {"type": "string"},
+      "title": {"type": "string"},
+      "description": {"type": "string"},
+      "price": {"type": "number"},
+      "images": {"type": "array"},
+      "category": {"type": "string"},
+      "status": {"type": "string"},
+      "user_id": {"type": "string"},
+      "created_at": {"type": "timestamp"}
+    }
+  },
+  "jobs": {
+    "bsonType": "object",
+    "required": ["title", "salary", "user_id"],
+    "properties": {
+      "_id": {"type": "string"},
+      "title": {"type": "string"},
+      "description": {"type": "string"},
+      "salary": {"type": "number"},
+      "location": {"type": "string"},
+      "requirements": {"type": "string"},
+      "status": {"type": "string"},
+      "user_id": {"type": "string"},
+      "created_at": {"type": "timestamp"}
+    }
+  },
+  "errands": {
+    "bsonType": "object",
+    "required": ["title", "reward", "user_id"],
+    "properties": {
+      "_id": {"type": "string"},
+      "title": {"type": "string"},
+      "description": {"type": "string"},
+      "reward": {"type": "number"},
+      "location": {"type": "string"},
+      "status": {"type": "string"},
+      "user_id": {"type": "string"},
+      "created_at": {"type": "timestamp"}
+    }
+  }
+} 

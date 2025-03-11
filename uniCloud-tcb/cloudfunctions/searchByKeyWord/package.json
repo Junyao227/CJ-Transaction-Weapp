@@ -1,0 +1,7 @@
+{
+  "name": "searchByKeyWord",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

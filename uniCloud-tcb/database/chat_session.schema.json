@@ -1,0 +1,117 @@
+{
+	"bsonType": "object",
+	"required": ["buyer_id", "seller_id", "type"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "会话ID，系统自动生成"
+		},
+		"buyer_id": {
+			"bsonType": "string",
+			"title": "买家用户ID",
+			"description": "买家用户ID",
+			"trim": "both"
+		},
+		"seller_id": {
+			"bsonType": "string",
+			"title": "卖家用户ID",
+			"description": "卖家用户ID",
+			"trim": "both"
+		},
+		"type": {
+			"bsonType": "int",
+			"title": "会话类型",
+			"description": "会话类型：1二手商品 2兼职 3跑腿",
+			"defaultValue": 1,
+			"enum": [
+				{
+					"text": "二手商品",
+					"value": 1
+				},
+				{
+					"text": "兼职",
+					"value": 2
+				},
+				{
+					"text": "跑腿",
+					"value": 3
+				}
+			]
+		},
+		"related_item_id": {
+			"bsonType": "string",
+			"title": "关联ID",
+			"description": "关联的商品、兼职或跑腿任务ID",
+			"trim": "both"
+		},
+		"created_at": {
+			"bsonType": "date",
+			"title": "会话创建时间",
+			"description": "会话创建时间"
+		},
+		"updated_at": {
+			"bsonType": "date",
+			"title": "最后更新时间",
+			"description": "最后更新时间"
+		},
+		"last_message": {
+			"bsonType": "string",
+			"title": "最后一条消息内容",
+			"description": "会话中最后一条消息内容",
+			"trim": "both"
+		},
+		"unread_buyer": {
+			"bsonType": "int",
+			"title": "买家未读消息数",
+			"description": "买家未读消息数",
+			"defaultValue": 0
+		},
+		"unread_seller": {
+			"bsonType": "int",
+			"title": "卖家未读消息数",
+			"description": "卖家未读消息数",
+			"defaultValue": 0
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "会话状态",
+			"description": "会话状态：1活跃 2已结束 3已关闭",
+			"defaultValue": 1,
+			"enum": [
+				{
+					"text": "活跃",
+					"value": 1
+				},
+				{
+					"text": "已结束",
+					"value": 2
+				},
+				{
+					"text": "已关闭",
+					"value": 3
+				}
+			]
+		},
+		"is_deleted": {
+			"bsonType": "int",
+			"title": "是否已删除",
+			"description": "是否已删除，标志",
+			"defaultValue": 0,
+			"enum": [
+				{
+					"text": "未删除",
+					"value": 0
+				},
+				{
+					"text": "已删除",
+					"value": 1
+				}
+			]
+		}
+	}
+}

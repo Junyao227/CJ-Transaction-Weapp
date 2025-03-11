@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "sass": "^1.83.0",
+    "sass-loader": "^10.5.2",
+    "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
+    "joi": "^17.13.3",
+    "uuid": "^11.0.3",
+    "uview-ui": "^2.0.38",
+    "vuex": "^3.6.2",
+    "wx-server-sdk": "^3.0.1"
+  }
+}

@@ -1,0 +1,97 @@
+// 二手商品信息基本表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "标题",
+			"description": "标题",
+			"trim": "both"
+
+		},
+		"description": {
+			"bsonType": "string",
+			"title": "描述",
+			"description": "描述",
+			"trim": "both"
+		},
+		"price": {
+			"bsonType": "double",
+			"title": "价格",
+			"description": "二手商品价格",
+			"defaultValue": 0
+		},
+		"quantity": {
+			"bsonType": "double",
+			"title": "库存数量",
+			"description": "库存数量",
+			"defaultValue": 0
+		},
+		"images": {
+			"bsonType": "string",
+			"title": "二手商品图片链接",
+			"description": "二手商品图片链接",
+			"trim": "both"
+		},
+		"location": {
+			"bsonType": "string",
+			"title": "二手商品地址",
+			"description": "二手商品地址",
+			"trim": "both"
+		},
+		"publisher_id": {
+			"bsonType": "string",
+			"title": "发布者user_id",
+			"description": "发布者user_id",
+			"trim": "both"
+		},
+		"created_time": {
+			"bsonType": "date",
+			"title": "上架时间",
+			"description": "上架时间"
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "二手商品状态",
+			"description": "二手商品状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "在卖",
+					"value": 0
+				},{
+					"text": "草稿",
+					"value": 1
+				},
+				{
+					"text": "已下架",
+					"value": 2
+				}
+			]
+		},
+		"del": {
+			"bsonType": "int",
+			"title": "逻辑删除",
+			"description": "逻辑删除",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "未删除",
+					"value": 0
+				},
+				{
+					"text": "已删除",
+					"value": 1
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,7 @@
+{
+  "name": "savePartTimeJobInfo",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

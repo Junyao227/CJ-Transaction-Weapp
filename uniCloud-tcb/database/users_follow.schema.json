@@ -1,0 +1,29 @@
+// 用户关注信息基本表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"type": "string",
+			"description": "用户ID（发起关注的用户）"
+		},
+		"followed_user_id": {
+			"type": "string",
+			"description": "被关注的用户ID"
+		},
+		"created_at": {
+			"type": "timestamp",
+			"description": "关注时间"
+		}
+	},
+	"version": "1.0.3"
+}

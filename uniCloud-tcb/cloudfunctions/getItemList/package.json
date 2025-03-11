@@ -1,0 +1,7 @@
+{
+  "name": "getItenLis",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

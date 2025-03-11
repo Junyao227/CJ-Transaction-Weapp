@@ -1,0 +1,53 @@
+// 用户权限表
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"title": "用户ID",
+			"description": "用户ID",
+			"trim": "both"
+		},
+		"role_id": {
+			"bsonType": "string",
+			"description": "角色ID（系统自动生成）"
+		},
+		"role_name": {
+			"bsonType": "string",
+			"description": "角色名称",
+			"trim": "both"
+		},
+		"permissions": {
+			"bsonType": "array",
+			"description": "角色的权限",
+			"items": {
+				"bsonType": "string",
+				"description": "权限标识，如 read, write, delete"
+			}
+		},
+		"status": {
+			"bsonType": "int",
+			"description": "角色状态：0 启用，1 禁用",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "启用",
+					"value": 0
+				},
+				{
+					"text": "禁用",
+					"value": 1
+				}
+			]
+		}
+	}
+}

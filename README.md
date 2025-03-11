@@ -13,8 +13,8 @@
 	<tr>
 		<td><img width="100%" src=".github/images/login.png" /></td>
 		<td><img width="100%" src=".github/images/index.png" /></td>
-		<td><img width="100%" src=".github/images/messages.png" /></td>
-		<td><img width="100%" src=".github/images/mine.png" /></td>
+		<td><img width="100%" src=".github/images/messages.jpg" /></td>
+		<td><img width="100%" src=".github/images/mine.jpg" /></td>
 	</tr>
 	<tr>
 		<td><img width="100%" src=".github/images/publish.png" /></td>

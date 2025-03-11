@@ -7,6 +7,6 @@
 ![我的发布](/.github/images/publish.png)
 ![二手商品聊天](/.github/images/chat.png)
 ![详情](/.github/images/detail.png)
-<img src=".github/images/detail.png" alt="项目截图" style="max-width:500px; height:auto;">
+<img src=".github/images/detail.png" alt="项目截图" style="max-width:100px; height:auto;">
 ![详情](https://imgur.com/a/NPvaVoM)
 [](https://imgur.com/a/NPvaVoM)

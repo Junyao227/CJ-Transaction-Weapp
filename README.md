@@ -1,3 +1,9 @@
 # CJ-Transaction-Weapp
 基于unicloud云开发的校园二手商品，兼职，跑腿的微信小程序
-![](README_files/1.jpg)
+![登录](/.github/images/login.png)
+![首页](/.github/images/index.png)
+![消息](/.github/images/messages.jpg)
+![我的](/.github/images/mine.png)
+![我的发布](/.github/images/publish.png)
+![二手商品聊天](/.github/images/chat.png)
+![详情](/.github/images/detail.png)

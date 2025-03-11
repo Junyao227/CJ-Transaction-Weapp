@@ -7,6 +7,18 @@
 ![我的发布](/.github/images/publish.png)
 ![二手商品聊天](/.github/images/chat.png)
 ![详情](/.github/images/detail.png)
-<img src=".github/images/detail.png" alt="项目截图" style="max-width:100px; height:auto;">
-![详情](https://imgur.com/a/NPvaVoM)
-[](https://imgur.com/a/NPvaVoM)
+
+<table>
+	<tr>
+		<td><img width="100%" src=".github/images/login.png" /></td>
+		<td><img width="100%" src=".github/images/index.png" /></td>
+		<td><img width="100%" src=".github/images/messages.png" /></td>
+		<td><img width="100%" src=".github/images/mine.png" /></td>
+	</tr>
+	<tr>
+		<td><img width="100%" src=".github/images/publish.png" /></td>
+		<td><img width="100%" src=".github/images/chat.png" /></td>
+		<td><img width="100%" src=".github/images/detail.png" /></td>
+	</tr>
+
+</table>

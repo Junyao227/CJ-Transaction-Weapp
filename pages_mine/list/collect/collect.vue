@@ -14,6 +14,7 @@
 					</view>
 				</view>
 			</view>
+			<u-empty :show="!itemList || itemList.length === 0" mode="data"></u-empty>
 		</view>
 
 		<!-- 兼职 -->
@@ -26,6 +27,7 @@
 					</view>
 				</view>
 			</view>
+			<u-empty :show="!jobList || jobList.length === 0" mode="data"></u-empty>
 		</view>
 
 		<!-- 跑腿任务 -->
@@ -38,6 +40,7 @@
 					</view>
 				</view>
 			</view>
+			<u-empty :show="!taskList || taskList.length === 0" mode="data"></u-empty>
 		</view>
 	</view>
 </template>

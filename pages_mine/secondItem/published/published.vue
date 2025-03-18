@@ -12,6 +12,7 @@
 					<view class="item-price">价格: ¥{{ item.price }}</view>
 				</view>
 			</view>
+			<u-empty :show="!onSaleItems || onSaleItems.length === 0" mode="data"></u-empty>
 		</view>
 
 		<view v-if="activeTab === 1" class="item-list">
@@ -22,6 +23,7 @@
 					<view class="item-price">价格: ¥{{ item.price }}</view>
 				</view>
 			</view>
+			<u-empty :show="!draftItems || draftItems.length === 0" mode="data"></u-empty>
 		</view>
 
 		<view v-if="activeTab === 2" class="item-list">
@@ -32,6 +34,7 @@
 					<view class="item-price">价格: ¥{{ item.price }}</view>
 				</view>
 			</view>
+			<u-empty :show="!offShelfItems || offShelfItems.length === 0" mode="data"></u-empty>
 		</view>
 	</view>
 </template>

@@ -19,6 +19,9 @@
 
       <!-- 显示加载中动画 -->
       <u-loading-icon :show="loading" text="加载中..." />
+	  <u-empty :show="!followedUsers || followedUsers.length === 0" mode="data"></u-empty>
+	  
+	  
     </scroll-view>
   </view>
 </template>

@@ -1,35 +1,37 @@
 <template>
-	<view>
-		<!-- 兼职表单部分 -->
-		<u-form :model="formJobData" ref="formJob" :rules="rules">
-			<u-form-item label="兼职标题" prop="formJobData.title">
-				<u-input v-model="formJobData.title" placeholder="请输入兼职标题"></u-input>
-			</u-form-item>
+	<view class="container">
+		<!-- 表单包裹层 -->
+		<view class="form-wrapper">
+			<!-- 兼职表单部分 -->
+			<u--form :model="formJobData" ref="formJob" :rules="rules" labelPosition="top">
+				<u-form-item label="兼职标题" prop="formJobData.title" labelWidth="140">
+					<u--input v-model="formJobData.title" placeholder="请输入兼职标题"></u--input>
+				</u-form-item>
 
-			<u-form-item label="兼职描述" prop="formJobData.description">
-				<u--textarea v-model="formJobData.description" placeholder="请输入兼职描述" :maxlength="500" :show-count="true"></u--textarea>
-			</u-form-item>
-			<u-form-item label="公司" prop="formJobData.company">
-				<u-input v-model="formJobData.company" placeholder="请输入公司名称"></u-input>
-			</u-form-item>
+				<u-form-item label="兼职描述" prop="formJobData.description" labelWidth="140">
+					<u--textarea v-model="formJobData.description" placeholder="请输入兼职描述" :maxlength="500" :show-count="true"></u--textarea>
+				</u-form-item>
+				<u-form-item label="公司" prop="formJobData.company" labelWidth="140">
+					<u--input v-model="formJobData.company" placeholder="请输入公司名称"></u--input>
+				</u-form-item>
 
-			<u-form-item label="薪资" prop="salary">
-				<u-input type="number" v-model="formJobData.salary" placeholder="请输入薪资" min="0" step="0.01"></u-input>
-			</u-form-item>
+				<u-form-item label="薪资" prop="salary" labelWidth="140">
+					<u--input type="number" v-model="formJobData.salary" placeholder="请输入薪资" min="0" step="0.01"></u--input>
+				</u-form-item>
 
-			<u-form-item label="工作类型" prop="job_type">
-				<u-radio-group v-model="formJobData.job_type" placement="row">
-					<u-radio v-for="(item, index) in jobTypes" :key="index" :label="item.name" :name="index" labelSize="30"></u-radio>
-				</u-radio-group>
-			</u-form-item>
+				<u-form-item label="工作类型" prop="job_type" labelWidth="140">
+					<u-radio-group v-model="formJobData.job_type" placement="row">
+						<u-radio v-for="(item, index) in jobTypes" :key="index" :label="item.name" :name="index" labelSize="30"></u-radio>
+					</u-radio-group>
+				</u-form-item>
 
-			<u-form-item label="工作地点" prop="location">
-				<u-input v-model="formJobData.location" placeholder="请输入工作地点"></u-input>
-			</u-form-item>
-
-			<!-- 提交按钮 -->
-			<u-button type="primary" formType="submit" @click="submitJobForm">发布</u-button>
-		</u-form>
+				<u-form-item label="工作地点" prop="location" labelWidth="140">
+					<u--input v-model="formJobData.location" placeholder="请输入工作地点"></u--input>
+				</u-form-item>
+			</u--form>
+		</view>
+		<!-- 提交按钮 -->
+		<u-button type="primary" formType="submit" @click="submitJobForm">发布</u-button>
 	</view>
 </template>
 
@@ -126,4 +128,19 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+/* 整体布局样式 */
+.container {
+	background-color: #f7f8fa;
+	padding: 20px 2%; /* 保持左右内边距，使内容紧凑 */
+	min-height: 100vh; /* 确保页面填充整个屏幕 */
+}
+
+/* 表单包裹层 */
+.form-wrapper {
+	background-color: #fff;
+	border-radius: 12px; /* 增加圆角，现代感 */
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 添加轻微阴影，突出内容 */
+	padding: 15px; /* 增加内边距，舒适布局 */
+}
+</style>

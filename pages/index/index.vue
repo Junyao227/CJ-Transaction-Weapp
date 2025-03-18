@@ -40,6 +40,7 @@
 						</view>
 					</view>
 				</view>
+				<u-empty :show="!itemList || itemList.length === 0" mode="data"></u-empty>
 			</view>
 			<view v-if="current === 1">
 				<!-- 兼职列表 -->
@@ -61,6 +62,7 @@
 						</view>
 					</view>
 				</view>
+				<u-empty :show="!jobList || jobList.length === 0" mode="data"></u-empty>
 			</view>
 			<view v-if="current === 2">
 				<!-- 跑腿任务列表 -->
@@ -78,6 +80,7 @@
 						</view>
 					</view>
 				</view>
+				<u-empty :show="!taskList || taskList.length === 0" mode="data"></u-empty>
 			</view>
 		</view>
 		<u-toast ref="uToast" />
@@ -319,72 +322,71 @@ export default {
 <style scoped>
 /* 整体布局样式 */
 .container {
-  background-color: #f7f8fa;
-  padding: 20px 2%; /* 保持左右内边距，使内容紧凑 */
+	background-color: #f7f8fa;
+	padding: 20px 2%; /* 保持左右内边距，使内容紧凑 */
 }
 
 /* 跳蚤商品页面样式 */
 .item-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; /* 确保两列均匀分布 */
-  padding: 10px 0;
-  gap: 6px; /* 保持卡片间距，紧凑排布 */
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between; /* 确保两列均匀分布 */
+	padding: 10px 0;
+	gap: 6px; /* 保持卡片间距，紧凑排布 */
 }
 
 .item-card {
-  width: 49%; /* 保持紧凑的宽度，确保一行显示两个卡片，保留细小间隙 */
-  margin-bottom: 10px; /* 保持底部间距 */
-  border-radius: 8px; /* 保持圆角，类似闲鱼风格 */
-  padding: 8px; /* 保持内边距 */
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 较轻的阴影，闲鱼风格 */
-  transition: transform 0.2s; /* 添加轻微 hover 动画 */
+	width: 49%; /* 保持紧凑的宽度，确保一行显示两个卡片，保留细小间隙 */
+	margin-bottom: 10px; /* 保持底部间距 */
+	border-radius: 8px; /* 保持圆角，类似闲鱼风格 */
+	padding: 8px; /* 保持内边距 */
+	background-color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 较轻的阴影，闲鱼风格 */
+	transition: transform 0.2s; /* 添加轻微 hover 动画 */
 }
 
 .item-card:hover {
-  transform: scale(1.02); /* 轻微放大效果，增强交互感 */
+	transform: scale(1.02); /* 轻微放大效果，增强交互感 */
 }
 
 .item-image {
-  width: 100%;
-  height: 130px; /* 扩大图片高度，突出商品 */
-  border-radius: 6px; /* 图片圆角与卡片一致 */
-  object-fit: cover; /* 保持图片覆盖，适合大多数比例 */
+	width: 100%;
+	height: 130px; /* 扩大图片高度，突出商品 */
+	border-radius: 6px; /* 图片圆角与卡片一致 */
+	object-fit: cover; /* 保持图片覆盖，适合大多数比例 */
 }
 
 .item-info {
-  margin-top: 8px; /* 微调标题和图片的间距，适应较大图片 */
+	margin-top: 8px; /* 微调标题和图片的间距，适应较大图片 */
 }
 
 .item-title {
-  font-size: 14px; /* 增大标题字体，保持清晰但紧凑 */
-  font-weight: 500; /* 稍轻的粗体，类似闲鱼 */
-  color: #333;
-  line-height: 1.3; /* 微调行高，适应较大字体 */
-  white-space: nowrap; /* 防止标题换行 */
-  overflow: hidden; /* 超出部分隐藏 */
-  text-overflow: ellipsis; /* 超出部分显示省略号 */
+	font-size: 14px; /* 增大标题字体，保持清晰但紧凑 */
+	font-weight: 500; /* 稍轻的粗体，类似闲鱼 */
+	color: #333;
+	line-height: 1.3; /* 微调行高，适应较大字体 */
+	white-space: nowrap; /* 防止标题换行 */
+	overflow: hidden; /* 超出部分隐藏 */
+	text-overflow: ellipsis; /* 超出部分显示省略号 */
 }
 
 .item-price-location {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 6px; /* 微调间距，适应较大字体 */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 6px; /* 微调间距，适应较大字体 */
 }
 
 .item-price {
-  font-size: 16px; /* 增大价格字体，保持醒目 */
-  color: #ff6b6b; /* 微调为更柔和的红色，协调配色 */
-  font-weight: bold;
+	font-size: 16px; /* 增大价格字体，保持醒目 */
+	color: #ff6b6b; /* 微调为更柔和的红色，协调配色 */
+	font-weight: bold;
 }
 
 .item-location {
-  font-size: 12px; /* 增大位置字体，保持清晰 */
-  color: #999;
+	font-size: 12px; /* 增大位置字体，保持清晰 */
+	color: #999;
 }
-
 
 /* 兼职页面样式 */
 .job-list {

@@ -4,21 +4,18 @@ const sessionCollection = db.collection('chat_session');
 
 exports.main = async (event, context) => {
   try {
-    const { userId, sellerId, type,related_id} = event;
+    const { sessionId} = event;
 
     const res = await sessionCollection
       .where({
-        buyer_id: userId,
-        seller_id: sellerId,
-		type: type,
-		related_item_id: related_id
+        _id: sessionId
       })
       .get();
 
     if (res.data.length > 0) {
       return {
         success: true,
-        sessionId: res.data[0]._id,
+        session: res.data
       };
     } else {
       return {

@@ -130,12 +130,12 @@ export default {
 				if (this.publisherAndTaskInfo.otherId && this.userInfo.userId === this.sellerInfo.sellerId) {
 					res = await uniCloud.callFunction({
 						name: 'getChatSessionBySellerIdAndUserId',
-						data: { userId: this.publisherAndTaskInfo.otherId, sellerId: this.userInfo.userId, type: 3 }
+						data: { userId: this.publisherAndTaskInfo.otherId, sellerId: this.userInfo.userId, related_id:this.sellerAndItemInfo._id, type: 3 }
 					});
 				} else {
 					res = await uniCloud.callFunction({
 						name: 'getChatSessionBySellerIdAndUserId',
-						data: { userId: this.userInfo.userId, sellerId: this.sellerInfo.sellerId, type: 3 }
+						data: { userId: this.userInfo.userId, sellerId: this.sellerInfo.sellerId, related_id:this.sellerAndItemInfo._id, type: 3 }
 					});
 				}
 

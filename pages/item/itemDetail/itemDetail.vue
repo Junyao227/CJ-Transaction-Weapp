@@ -92,7 +92,7 @@ export default {
 								title: res.result.message || '查询失败'
 							});
 						}
-						this.loading = false; // 加载完成，设置 loading 为 false
+						
 					},
 					fail: (err) => {
 						uni.showToast({
@@ -137,6 +137,7 @@ export default {
 				success: (res) => {
 					if (res.result.success) {
 						this.isCollected = res.result.isCollected;
+						this.loading = false; // 加载完成，设置 loading 为 false
 					}
 				},
 				fail: (err) => {

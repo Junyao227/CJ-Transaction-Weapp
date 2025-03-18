@@ -16,7 +16,7 @@
 
 			<!-- 消息列表 -->
 			<scroll-view class="messages" scroll-y :scroll-top="scrollTop">
-				<view v-for="(msg, index) in messages" :key="index" class="message-item">
+				<view v-for="(msg, index) in messageList" :key="index" class="message-item">
 					<!-- 卖家消息布局 -->
 					<view v-if="msg.senderId !== userInfo.userId" class="message-left-wrapper">
 						<view class="avatar-container">
@@ -51,6 +51,7 @@
 
 <script>
 const GoEasy = uni.$GoEasy;
+import { mapState, mapActions, mapGetters } from 'vuex';
 export default {
 	data() {
 		return {
@@ -64,15 +65,15 @@ export default {
 				sellerAvatar: ''
 			},
 			sessionId: '', // 会话ID
-			messages: [], // 消息列表
+			messageList: [], // 消息列表
 			message: '', // 用户输入的消息
 			scrollTop: 0, // 控制滚动位置
 			itemInfo: {
 				imageUrl: '',
 				price: ''
 			},
-			sellerAndItemInfo: {},
 			loading: true,
+			sellerAndItemInfo: {},
 			to: {}, // GoEasy 发送目标
 			goeasy: null
 		};
@@ -80,6 +81,9 @@ export default {
 	onLoad(options) {
 		const sellerAndItemInfo = JSON.parse(options.sellerAndItemInfo);
 		this.sellerAndItemInfo = sellerAndItemInfo;
+		console.log("this.sellerAndItemInf",this.sellerAndItemInfo);
+		this.itemInfo.price = sellerAndItemInfo.price;
+		this.getItemTempImagesUrl(sellerAndItemInfo);
 
 		const userInfo = uni.getStorageSync('USER_INFO');
 		this.userInfo.userId = userInfo.user_id;
@@ -89,16 +93,14 @@ export default {
 		this.sellerInfo.sellNickName = sellerAndItemInfo.nickname;
 		this.sellerInfo.sellerId = sellerAndItemInfo.publisher_id;
 
-		this.itemInfo.price = sellerAndItemInfo.price;
-		this.itemInfo.imageUrl = sellerAndItemInfo.imageUrl;
-
 		// 优化：将 to 初始化移到 onLoad 中，避免重复定义
 		this.to = {
 			id: this.sellerAndItemInfo.otherId && this.userInfo.userId === this.sellerInfo.sellerId ? this.sellerAndItemInfo.otherId : this.sellerInfo.sellerId,
 			type: GoEasy.IM_SCENE.PRIVATE,
 			data: {
 				name: this.sellerInfo.sellNickName || this.sellerInfo.sellerId,
-				avatar: this.sellerInfo.sellerAvatar
+				avatar: this.sellerInfo.sellerAvatar,
+				sessionId: this.sessionId
 			}
 		};
 		this.goeasy = GoEasy; // 假设已在 main.js 中全局引入
@@ -110,9 +112,31 @@ export default {
 		// 优化：移除 GoEasy 监听器，移除无用的 watcher 检查
 		this.goeasy.im.off(GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onMessageReceived);
 	},
+	computed: {
+		// 映射 Vuex 的状态和 getters
+		...mapState('messages', ['messages']),
+		...mapGetters('messages')
+	},
 	methods: {
+		// 映射 Vuex 的 actions
+		...mapActions('messages', ['updateSendMessage', 'updateReadedMessage']),
+		async getItemTempImagesUrl(sellerAndItemInfo) {
+			// 获取每个商品的临时图片链接
+			// 调用 uniCloud.getTempFileURL 获取图片的临时 URL
+			const result = await uniCloud.getTempFileURL({
+				fileList: [sellerAndItemInfo.images]
+			});
+
+			if (result.fileList && result.fileList.length > 0) {
+				this.itemInfo.imageUrl = result.fileList[0]?.tempFileURL;
+			} else {
+				uni.showToast({
+					icon: 'none',
+					title: '获取图片链接失败'
+				});
+			}
+		},
 		connectGoEasy() {
-		
 			this.goeasy.connect({
 				id: this.userInfo.userId, // 使用当前用户 ID
 				data: {
@@ -151,17 +175,18 @@ export default {
 				if (this.sellerAndItemInfo.otherId && this.userInfo.userId === this.sellerInfo.sellerId) {
 					res = await uniCloud.callFunction({
 						name: 'getChatSessionBySellerIdAndUserId',
-						data: { userId: this.sellerAndItemInfo.otherId, sellerId: this.userInfo.userId, type: 1 }
+						data: { userId: this.sellerAndItemInfo.otherId, sellerId: this.userInfo.userId, related_id:this.sellerAndItemInfo._id,type: 1 }
 					});
 				} else {
 					res = await uniCloud.callFunction({
 						name: 'getChatSessionBySellerIdAndUserId',
-						data: { userId: this.userInfo.userId, sellerId: this.sellerInfo.sellerId, type: 1 }
+						data: { userId: this.userInfo.userId, sellerId: this.sellerInfo.sellerId, related_id:this.sellerAndItemInfo._id, type: 1 }
 					});
 				}
 
 				if (res.result.success) {
 					this.sessionId = res.result.sessionId;
+					this.updateReadedMessage({ sessionId: this.sessionId });
 					await uniCloud.callFunction({
 						name: 'markMessagesAsRead',
 						data: { sessionId: this.sessionId, userId: this.userInfo.userId }
@@ -192,7 +217,7 @@ export default {
 					data: { sessionId: this.sessionId }
 				});
 				if (res.result.success) {
-					this.messages = res.result.messages.map((msg) => ({
+					this.messageList = res.result.messages.map((msg) => ({
 						senderId: msg.sender_id,
 						content: msg.content,
 						timestamp: msg.created_at
@@ -216,12 +241,19 @@ export default {
 				text: this.message,
 				to: this.to,
 				onSuccess: (message) => {
+					message.payload.customData = {
+						sessionId: this.sessionId,
+						type: 1
+					};
+
 					// 本地立即显示
-					this.messages.push({
+					this.messageList.push({
 						senderId: this.userInfo.userId,
 						content: this.message,
 						timestamp: Date.now()
 					});
+
+					this.updateSendMessage({ message: this.message,sessionId: this.sessionId,type: 1,otherUserId: this.to.id});
 
 					this.scrollToBottom();
 
@@ -273,7 +305,7 @@ export default {
 		// 优化：提取 scrollToBottom 为独立方法
 		scrollToBottom() {
 			this.$nextTick(() => {
-				this.scrollTop = this.messages.length * 100;
+				this.scrollTop = 999999; // 直接设置一个足够大的值
 			});
 		},
 		setupRealTimeMessages() {
@@ -287,11 +319,12 @@ export default {
 			console.log('接收到私信消息:', message);
 			if (friendId === this.to.id) {
 				// 优化：使用 to.id 判断
-				this.messages.push({
+				this.messageList.push({
 					senderId: message.senderId,
 					content: message.payload.text,
 					timestamp: message.timestamp
 				});
+				this.updateReadedMessage({ sessionId: this.sessionId });
 				this.scrollToBottom();
 			}
 		}

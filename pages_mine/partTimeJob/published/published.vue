@@ -12,6 +12,7 @@
 					<view class="item-price">价格: ¥{{ item.price }}</view>
 				</view>
 			</view>
+			<u-empty :show="!onHireItems || onHireItems.length === 0" mode="data"></u-empty>
 		</view>
 
 		<view v-if="activeTab === 1" class="item-list">
@@ -21,6 +22,7 @@
 					<view class="item-status">状态: 草稿</view>
 				</view>
 			</view>
+			<u-empty :show="!draftItems || draftItems.length === 0" mode="data"></u-empty>
 		</view>
 
 		<view v-if="activeTab === 2" class="item-list">
@@ -30,6 +32,7 @@
 					<view class="item-status">状态: 已下架</view>
 				</view>
 			</view>
+			<u-empty :show="!offHireItems || offHireItems.length === 0" mode="data"></u-empty>
 		</view>
 	</view>
 </template>

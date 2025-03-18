@@ -24,234 +24,228 @@
 					<u-tag :text="getTypeLabel(msg.type)" size="mini" :type="getTypeTag(msg.type)" />
 				</view>
 			</view>
+			<u-empty :show="!messages || messages.length === 0" mode="data"></u-empty>
 		</view>
+		
 	</view>
 </template>
 
 <script>
 import dayjs from 'dayjs';
-
+import { mapState, mapActions, mapGetters } from 'vuex';
 const GoEasy = uni.$GoEasy; // 假设已在 main.js 中全局引入
 
 export default {
-  data() {
-    return {
-      messages: [],
-      userId: '',
-      loading: true, // 页面加载状态
-      goeasy: null // GoEasy 实例
-    };
-  },
-  onLoad() {
-    // 获取当前用户信息
-    const userInfo = uni.getStorageSync('USER_INFO');
-    this.userId = userInfo.user_id;
+	data() {
+		return {
+			userId: '',
+			goeasy: null // GoEasy 实例
+		};
+	},
+	computed: {
+		// 映射 Vuex 的状态和 getters
+		...mapState('messages', ['messages']),
+		...mapGetters('messages', ['loading'])
+	},
+	async onLoad() {
+		// 获取当前用户信息
+		const userInfo = uni.getStorageSync('USER_INFO');
+		this.userId = userInfo.user_id;
 
-    // 初始化 GoEasy
-    this.goeasy = GoEasy;
-    this.connectGoEasy();
+		// 初始化 GoEasy
+		this.goeasy = GoEasy;
+		this.connectGoEasy();
 
-    // 获取消息列表
-    this.fetchMessages();
+		// 获取消息列表
+		await this.fetchMessages(this.userId);
 
-    // 设置实时消息监听
-    this.setupRealTimeMessages();
-  },
-  onShow() {
-    // 刷新消息列表，确保实时更新
-    this.fetchMessages();
-  },
-  onUnload() {
-    // 关闭 GoEasy 连接和实时监听
-    if (this.goeasy) {
-      this.goeasy.im.off(GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onMessageReceived);
-    }
-  },
-  methods: {
-    // 连接 GoEasy
-    connectGoEasy() {
-      this.goeasy.connect({
-        id: this.userId, // 使用当前用户 ID
-        data: {
-          avatar: uni.getStorageSync('USER_INFO').avatar || '/static/logo.png',
-          nickname: uni.getStorageSync('USER_INFO').user_id
-        },
-        onSuccess: () => {
-          console.log('GoEasy connect successfully.');
-        },
-        onFailed: (error) => {
-          console.log('Failed to connect GoEasy, code:' + error.code + ', error:' + error.content);
-        },
-        onProgress: (attempts) => {
-          console.log('GoEasy is connecting', attempts);
-        }
-      });
-    },
+		// 设置实时消息监听
+		this.setupRealTimeMessages();
+	},
+	onUnload() {
+		// 关闭 GoEasy 连接和实时监听
+		if (this.goeasy) {
+			this.goeasy.im.off(GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onMessageReceived);
+		}
+	},
+	methods: {
+		// 映射 Vuex 的 actions
+		...mapActions('messages', ['fetchMessages', 'updateReceiveMessage']),
+		// 连接 GoEasy
+		connectGoEasy() {
+			this.goeasy.connect({
+				id: this.userId, // 使用当前用户 ID
+				data: {
+					avatar: uni.getStorageSync('USER_INFO').avatar || '/static/logo.png',
+					nickname: uni.getStorageSync('USER_INFO').user_id
+				},
+				onSuccess: () => {
+					console.log('GoEasy connect successfully.');
+				},
+				onFailed: (error) => {
+					console.log('Failed to connect GoEasy, code:' + error.code + ', error:' + error.content);
+				},
+				onProgress: (attempts) => {
+					console.log('GoEasy is connecting', attempts);
+				}
+			});
+		},
 
-    async fetchMessages() {
-      const res = await uniCloud.callFunction({
-        name: 'getSessionByUserId',
-        data: { userId: this.userId }
-      });
+		// async fetchMessages() {
+		// 	const res = await uniCloud.callFunction({
+		// 		name: 'getSessionByUserId',
+		// 		data: { userId: this.userId }
+		// 	});
 
-      if (res.result.success) {
-        // 遍历会话列表，获取对方用户信息
-        const messages = await Promise.all(
-          res.result.data.map(async (session) => {
-            // 确定对方用户的ID
-            const otherUserId = session.buyer_id === this.userId ? session.seller_id : session.buyer_id;
+		// 	if (res.result.success) {
+		// 		// 遍历会话列表，获取对方用户信息
+		// 		const messages = await Promise.all(
+		// 			res.result.data.map(async (session) => {
+		// 				// 确定对方用户的ID
+		// 				const otherUserId = session.buyer_id === this.userId ? session.seller_id : session.buyer_id;
 
-            // 调用云函数获取对方用户信息
-            const userRes = await uniCloud.callFunction({
-              name: 'getUserInfoByUserId',
-              data: { userId: otherUserId }
-            });
+		// 				// 调用云函数获取对方用户信息
+		// 				const userRes = await uniCloud.callFunction({
+		// 					name: 'getUserInfoByUserId',
+		// 					data: { userId: otherUserId }
+		// 				});
 
-            if (!userRes.result.success) {
-              console.log('获取用户信息失败:', userRes.result.message);
-              return null;
-            }
+		// 				if (!userRes.result.success) {
+		// 					console.log('获取用户信息失败:', userRes.result.message);
+		// 					return null;
+		// 				}
 
-            const otherUserInfo = userRes.result.data; // 对方用户信息
+		// 				const otherUserInfo = userRes.result.data; // 对方用户信息
 
-            // 获取相关的商品、兼职或跑腿信息
-            let relatedInfo = {};
-            if (session.type === 1) {
-              // 二手商品
-              const itemRes = await uniCloud.callFunction({
-                name: 'getItemInfoById',
-                data: { itemId: session.related_item_id }
-              });
-              if (itemRes.result.success) {
-                relatedInfo = { ...itemRes.result.data, avatar: otherUserInfo.avatar, nickname: otherUserInfo.nickname, otherId: otherUserInfo.user_id };
-              }
-            } else if (session.type === 2) {
-              // 兼职
-              const jobRes = await uniCloud.callFunction({
-                name: 'getJobInfoById',
-                data: { jobId: session.related_item_id }
-              });
-              if (jobRes.result.success) {
-                relatedInfo = { ...jobRes.result.data, avatar: otherUserInfo.avatar, nickname: otherUserInfo.nickname, otherId: otherUserInfo.user_id };
-              }
-            } else if (session.type === 3) {
-              // 跑腿
-              const taskRes = await uniCloud.callFunction({
-                name: 'getTaskInfoById',
-                data: { taskId: session.related_item_id }
-              });
-              if (taskRes.result.success) {
-                relatedInfo = { ...taskRes.result.data, avatar: otherUserInfo.avatar, nickname: otherUserInfo.nickname, otherId: otherUserInfo.user_id };
-              }
-            }
+		// 				// 获取相关的商品、兼职或跑腿信息
+		// 				let relatedInfo = {};
+		// 				if (session.type === 1) {
+		// 					// 二手商品
+		// 					const itemRes = await uniCloud.callFunction({
+		// 						name: 'getItemInfoById',
+		// 						data: { itemId: session.related_item_id }
+		// 					});
+		// 					if (itemRes.result.success) {
+		// 						relatedInfo = { ...itemRes.result.data, avatar: otherUserInfo.avatar, nickname: otherUserInfo.nickname, otherId: otherUserInfo.user_id };
+		// 					}
+		// 				} else if (session.type === 2) {
+		// 					// 兼职
+		// 					const jobRes = await uniCloud.callFunction({
+		// 						name: 'getJobInfoById',
+		// 						data: { jobId: session.related_item_id }
+		// 					});
+		// 					if (jobRes.result.success) {
+		// 						relatedInfo = { ...jobRes.result.data, avatar: otherUserInfo.avatar, nickname: otherUserInfo.nickname, otherId: otherUserInfo.user_id };
+		// 					}
+		// 				} else if (session.type === 3) {
+		// 					// 跑腿
+		// 					const taskRes = await uniCloud.callFunction({
+		// 						name: 'getTaskInfoById',
+		// 						data: { taskId: session.related_item_id }
+		// 					});
+		// 					if (taskRes.result.success) {
+		// 						relatedInfo = { ...taskRes.result.data, avatar: otherUserInfo.avatar, nickname: otherUserInfo.nickname, otherId: otherUserInfo.user_id };
+		// 					}
+		// 				}
 
-            this.loading = false; // 加载完成，设置 loading 为 false
-            return {
-              sessionId: session._id,
-              userId: session.buyer_id,
-              type: session.type, // 1: 二手商品, 2: 兼职, 3: 跑腿
-              lastMessage: session.last_message,
-              timestamp: session.updated_at,
-              unreadCount: session.unread_count || 0, // 未读消息数
-              relatedInfo // 动态添加对应的商品、兼职或跑腿信息
-            };
-          })
-        );
-		this.messages = [...messages]; // 强制触发更新
-      }
-    },
+		// 				this.loading = false; // 加载完成，设置 loading 为 false
+		// 				return {
+		// 					sessionId: session._id,
+		// 					userId: session.buyer_id,
+		// 					type: session.type, // 1: 二手商品, 2: 兼职, 3: 跑腿
+		// 					lastMessage: session.last_message,
+		// 					timestamp: session.updated_at,
+		// 					unreadCount: session.unread_count || 0, // 未读消息数
+		// 					relatedInfo // 动态添加对应的商品、兼职或跑腿信息
+		// 				};
+		// 			})
+		// 		);
+		// 		this.messages = [...messages]; // 强制触发更新
+		// 	}
+		// },
 
-    // 设置实时消息监听
-    setupRealTimeMessages() {
-      // GoEasy 实时消息监听
-      this.goeasy.im.on(GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onMessageReceived);
+		// 设置实时消息监听
+		setupRealTimeMessages() {
+			// GoEasy 实时消息监听
+			this.goeasy.im.on(GoEasy.IM_EVENT.PRIVATE_MESSAGE_RECEIVED, this.onMessageReceived);
+		},
 
-    },
+		// 接收实时消息
+		async onMessageReceived(message) {
+			this.updateReceiveMessage({ message, userId: this.userId });
+			console.log('现在的消息   message', this.messages, message);
+		},
 
-    // 接收实时消息
-    onMessageReceived(message) {
-      const senderId = message.senderId;
-      const receiverId = message.receiverId;
-      const friendId = this.userId === senderId ? receiverId : senderId;
+		// 获取类型标签
+		getTypeLabel(type) {
+			switch (type) {
+				case 1:
+					return '二手商品';
+				case 2:
+					return '兼职';
+				case 3:
+					return '跑腿';
+				default:
+					return '未知';
+			}
+		},
 
-      console.log('接收到私信消息:', message);
-      if (friendId) {
-        // 更新消息列表，模拟消息到达
-        this.fetchMessages(); // 刷新消息列表以显示最新消息
-		console.log("现在的消息",this.messages);
-      }
-    },
+		// 获取类型标签样式
+		getTypeTag(type) {
+			switch (type) {
+				case 1:
+					return 'success';
+				case 2:
+					return 'primary';
+				case 3:
+					return 'warning';
+				default:
+					return 'info';
+			}
+		},
 
-    // 获取类型标签
-    getTypeLabel(type) {
-      switch (type) {
-        case 1:
-          return '二手商品';
-        case 2:
-          return '兼职';
-        case 3:
-          return '跑腿';
-        default:
-          return '未知';
-      }
-    },
+		// 格式化时间
+		formatTime(timestamp) {
+			const now = dayjs(); // 当前时间
+			const msgDate = dayjs(timestamp); // 消息时间
+			const diffInDays = now.diff(msgDate, 'day'); // 计算相差的天数
 
-    // 获取类型标签样式
-    getTypeTag(type) {
-      switch (type) {
-        case 1:
-          return 'success';
-        case 2:
-          return 'primary';
-        case 3:
-          return 'warning';
-        default:
-          return 'info';
-      }
-    },
+			if (diffInDays === 0) {
+				// 如果是今天，显示时间（如 15:41）
+				return msgDate.format('HH:mm'); // 24 小时制
+			} else if (diffInDays === 1) {
+				// 如果是昨天，显示 "昨天"
+				return '昨天';
+			} else {
+				// 如果是更早的消息，显示日期（如 2025-02-16）
+				return msgDate.format('YYYY-MM-DD');
+			}
+		},
 
-    // 格式化时间
-    formatTime(timestamp) {
-      const now = dayjs(); // 当前时间
-      const msgDate = dayjs(timestamp); // 消息时间
-      const diffInDays = now.diff(msgDate, 'day'); // 计算相差的天数
+		// 省略过长的消息内容
+		truncateMessage(message) {
+			if (message.length > 20) {
+				return message.substring(0, 20) + '...';
+			}
+			return message;
+		},
 
-      if (diffInDays === 0) {
-        // 如果是今天，显示时间（如 15:41）
-        return msgDate.format('HH:mm'); // 24 小时制
-      } else if (diffInDays === 1) {
-        // 如果是昨天，显示 "昨天"
-        return '昨天';
-      } else {
-        // 如果是更早的消息，显示日期（如 2025-02-16）
-        return msgDate.format('YYYY-MM-DD');
-      }
-    },
+		// 跳转到聊天详情页
+		goToChat(msg) {
+			let url = '';
+			if (msg.type === 1) {
+				url = `/pages/item/chat/chat?sellerAndItemInfo=${JSON.stringify(msg.relatedInfo)}`;
+			} else if (msg.type === 2) {
+				url = `/pages/job/chat/chat?publisherAndJobInfo=${JSON.stringify(msg.relatedInfo)}`;
+			} else if (msg.type === 3) {
+				url = `/pages/task/chat/chat?publisherAndTaskInfo=${JSON.stringify(msg.relatedInfo)}`;
+			}
 
-    // 省略过长的消息内容
-    truncateMessage(message) {
-      if (message.length > 20) {
-        return message.substring(0, 20) + '...';
-      }
-      return message;
-    },
-
-    // 跳转到聊天详情页
-    goToChat(msg) {
-      let url = '';
-      if (msg.type === 1) {
-        url = `/pages/item/chat/chat?sellerAndItemInfo=${JSON.stringify(msg.relatedInfo)}`;
-      } else if (msg.type === 2) {
-        url = `/pages/job/chat/chat?publisherAndJobInfo=${JSON.stringify(msg.relatedInfo)}`;
-      } else if (msg.type === 3) {
-        url = `/pages/task/chat/chat?publisherAndTaskInfo=${JSON.stringify(msg.relatedInfo)}`;
-      }
-
-      uni.navigateTo({
-        url: url
-      });
-    }
-  }
+			uni.navigateTo({
+				url: url
+			});
+		}
+	}
 };
 </script>
 

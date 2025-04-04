@@ -25,14 +25,19 @@
 	<tr>
 		<td><img width="100%" src=".github/images/login.png" /></td>
 		<td><img width="100%" src=".github/images/index.png" /></td>
-		<td><img width="100%" src=".github/images/messages.jpg" /></td>
-		<td><img width="100%" src=".github/images/mine.jpg" /></td>
+		<td><img width="100%" src=".github/images/message.png" /></td>
+		<td><img width="100%" src=".github/images/mine.png" /></td>
 	</tr>
 	<tr>
-		<td><img width="100%" src=".github/images/my_publish.png" /></td>
+	    <td><img width="100%" src=".github/images/publish.png" /></td>
+		<td><img width="100%" src=".github/images/myPublished.png" /></td>
+		<td><img width="100%" src=".github/images/itemDetail.png" /></td>
 		<td><img width="100%" src=".github/images/chat.png" /></td>
-		<td><img width="100%" src=".github/images/detail.png" /></td>
-		<td><img width="100%" src=".github/images/publish_item.png" /></td>
+	</tr>
+	<tr>
+		<td><img width="100%" src=".github/images/job.png" /></td>
+		<td><img width="100%" src=".github/images/task.png" /></td>
+		<td><img width="100%" src=".github/images/publishItem.png" /></td>
 	</tr>
 
 </table>

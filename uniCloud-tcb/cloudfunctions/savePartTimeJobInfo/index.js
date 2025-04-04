@@ -23,6 +23,7 @@ exports.main = async (event, context) => {
       location,
       publisher_id,
       created_time,
+	  company,
 	  status
     });
     return { success: true, message: '保存成功' };

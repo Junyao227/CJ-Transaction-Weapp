@@ -1,53 +1,79 @@
+
 <template>
-	<view class="container">
-		<!-- 如果页面正在加载，显示loading -->
-		<u-loading-page :loading="loading" loading-text="加载中..."></u-loading-page>
+  <view class="container">
+    <view v-if="!loading" class="content">
+      <!-- 商品基础信息区 -->
+      <view class="basic-info">
+        <view class="seller-info">
+          <view class="seller-left">
+            <image :src="sellerAndItemInfo.avatar" class="avatar" mode="aspectFill" />
+            <view class="seller-detail">
+              <text class="nickname">{{ sellerAndItemInfo.nickname }}</text>
+              <view class="credit-info">
+                <uni-icons type="star-filled" size="12" color="#FFB800"/>
+              </view>
+            </view>
+          </view>
+          <view class="follow-btn">
+            <uni-icons v-if="isFollowed" type="checkmarkempty" size="14" color="#07C160"/>
+            <text :class="['follow-text', isFollowed ? 'followed' : '']" @click="handleFollow">
+              {{ isFollowed ? '已关注' : '关注' }}
+            </text>
+          </view>
+        </view>
+      </view>
 
-		<!-- 页面内容 -->
-		<view v-if="!loading">
-			<!-- 用户信息 -->
-			<view class="user-info-card">
-				<image :src="sellerAndItemInfo.avatar" class="user-avatar" />
-				<view class="user-info-details">
-					<text class="user-nickname">{{ sellerAndItemInfo.nickname }}</text>
-					<view class="follow-btn-wrapper">
-						<u-button v-if="!isFollowed" type="default"  @click="followUser">关注</u-button>
-						<u-button v-else type="success"  @click="unfollowUser">已关注</u-button>
-					</view>
-				</view>
-			</view>
+      <!-- 商品图片展示 -->
+      <view class="goods-images">
+        <image :src="sellerAndItemInfo.imageUrl" class="main-image" mode="aspectFill" />
+      </view>
 
-			<!-- 商品价格 -->
-			<view class="item-price-card">
-				<text class="price-label">价格：</text>
-				<text class="price-value">￥{{ sellerAndItemInfo.price }}</text>
-			</view>
+      <!-- 价格信息 -->
+      <view class="price-section">
+        <view class="current-price">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{ sellerAndItemInfo.price }}</text>
+        </view>
+      </view>
 
-			<!-- 商品描述 -->
-			<view class="item-description-card">
-				<text class="description-label">描述：</text>
-				<text class="description-content">{{ sellerAndItemInfo.description }}</text>
-			</view>
+      <!-- 商品描述 -->
+      <view class="description-card">
+        <view class="desc-header">
+          <uni-icons type="info" size="16" color="#333333"/>
+          <text class="desc-title">商品描述</text>
+        </view>
+        <text class="desc-content">{{ sellerAndItemInfo.description }}</text>
+        <view class="tags">
+          <text class="tag">7天可退</text>
+          <text class="tag">认证发布</text>
+        </view>
+      </view>
 
-			<!-- 商品图片展示 -->
-			<view class="item-images-card">
-				<image :src="sellerAndItemInfo.imageUrl" class="item-image" mode="aspectFill" />
-			</view>
+      <!-- 底部操作栏 -->
+      <view class="bottom-actions">
+        <view class="action-left">
+          <view class="collect-btn" @click="handleCollect">
+            <u-icon :name="isCollected ? 'heart-fill' : 'heart'" size="24" :color="isCollected ? '#FF4D4F' : '#666666'"/>
+            <text :class="['collect-text', isCollected ? 'collected' : '']">{{ isCollected ? '已收藏' : '收藏' }}</text>
+          </view>
+          <view class="report-btn">
+            <u-icon name="info-circle" size="24" color="#666666"/>
+            <text class="report-text">举报</text>
+          </view>
+        </view>
+        <view class="action-right">
+          <button class="want-btn" @click="startChat">我想要</button>
+        </view>
+      </view>
+    </view>
 
-			<!-- 收藏按钮和"我想要"按钮放在同一行 -->
-			<view class="chat-btn-wrapper">
-				<view class="collect-btn-wrapper">
-					<u-button v-if="!isCollected" type="default"  @click="collectItem">收藏</u-button>
-					<u-button v-else type="success" @click="uncollectItem">已收藏</u-button>
-				</view>
-				<view class="chat-btn-wrapper-inner">
-					<u-button type="primary" @click="startChat">我想要</u-button>
-				</view>
-			</view>
-		</view>
-	</view>
+    <!-- 加载状态 -->
+    <view v-else class="loading-wrapper">
+      <uni-icons type="spinner-cycle" size="24" color="#666666"/>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
 </template>
-
 <script>
 export default {
 	data() {
@@ -145,246 +171,289 @@ export default {
 				}
 			});
 		},
-		// 收藏商品
-		collectItem() {
-			uniCloud.callFunction({
-				name: 'collectItem',
-				data: {
-					userId: uni.getStorageSync('USER_INFO').user_id,
-					itemId: this.sellerAndItemInfo._id,
-					type: 0 // 0 表示二手商品
-				},
-				success: (res) => {
-					if (res.result.success) {
-						this.isCollected = true;
-						uni.showToast({ title: '收藏成功', icon: 'success' });
-					}
-				},
-				fail: (err) => {
-					console.error('收藏失败:', err);
-					uni.showToast({ title: '收藏失败', icon: 'none' });
-				}
-			});
+		handleCollect() {
+		    const action = this.isCollected ? 'uncollectItem' : 'collectItem';
+		    uniCloud.callFunction({
+		        name: action,
+		        data: {
+		            userId: uni.getStorageSync('USER_INFO').user_id,
+		            itemId: this.sellerAndItemInfo._id,
+		            type: 0 // 0 表示二手商品
+		        },
+		        success: (res) => {
+		            if (res.result.success) {
+		                this.isCollected = !this.isCollected;
+		                uni.showToast({
+		                    title: this.isCollected ? '收藏成功' : '取消收藏成功',
+		                    icon: 'success'
+		                });
+		            }
+		        },
+		        fail: (err) => {
+		            console.error('收藏操作失败:', err);
+		            uni.showToast({
+		                title: '操作失败',
+		                icon: 'none'
+		            });
+		        }
+		    });
 		},
-		// 取消收藏商品
-		uncollectItem() {
-			uniCloud.callFunction({
-				name: 'uncollectItem',
-				data: {
-					userId: uni.getStorageSync('USER_INFO').user_id,
-					itemId: this.sellerAndItemInfo._id,
-					type: 0 // 0 表示二手商品
-				},
-				success: (res) => {
-					if (res.result.success) {
-						this.isCollected = false;
-						uni.showToast({ title: '取消收藏成功', icon: 'success' });
-					}
-				},
-				fail: (err) => {
-					console.error('取消收藏失败:', err);
-					uni.showToast({ title: '取消收藏失败', icon: 'none' });
-				}
-			});
-		},
-		// 关注用户
-		followUser() {
-			uniCloud.callFunction({
-				name: 'followUser',
-				data: {
-					userId: uni.getStorageSync('USER_INFO').user_id,
-					followedUserId: this.sellerAndItemInfo.publisher_id
-				},
-				success: (res) => {
-					if (res.result.success) {
-						this.isFollowed = true;
-						uni.showToast({ title: '关注成功', icon: 'success' });
-					}
-				},
-				fail: (err) => {
-					console.error('关注失败:', err);
-					uni.showToast({ title: '关注失败', icon: 'none' });
-				}
-			});
-		},
-		// 取消关注用户
-		unfollowUser() {
-			uniCloud.callFunction({
-				name: 'unfollowUser',
-				data: {
-					userId: uni.getStorageSync('USER_INFO').user_id,
-					followedUserId: this.sellerAndItemInfo.publisher_id
-				},
-				success: (res) => {
-					if (res.result.success) {
-						this.isFollowed = false;
-						uni.showToast({ title: '取消关注成功', icon: 'success' });
-					}
-				},
-				fail: (err) => {
-					console.error('取消关注失败:', err);
-					uni.showToast({ title: '取消关注失败', icon: 'none' });
-				}
-			});
+		handleFollow() {
+		    const action = this.isFollowed ? 'unfollowUser' : 'followUser';
+		    uniCloud.callFunction({
+		        name: action,
+		        data: {
+		            userId: uni.getStorageSync('USER_INFO').user_id,
+		            followedUserId: this.sellerAndItemInfo.publisher_id
+		        },
+		        success: (res) => {
+		            if (res.result.success) {
+		                this.isFollowed = !this.isFollowed;
+		                uni.showToast({
+		                    title: this.isFollowed ? '关注成功' : '取消关注成功',
+		                    icon: 'success'
+		                });
+		            }
+		        },
+		        fail: (err) => {
+		            console.error('关注操作失败:', err);
+		            uni.showToast({
+		                title: '操作失败',
+		                icon: 'none'
+		            });
+		        }
+		    });
 		}
 	}
 };
 </script>
 
-<style scoped>
-/* 容器样式 */
+<style>
+page {
+  height: 100%;
+  background-color: #F8F8F8;
+}
+
 .container {
-	background-color: #f7f8fa;
-	padding-bottom: 90px; /* 为底部按钮区块预留足够空间 */
+  min-height: 100%;
+  padding-bottom: 120rpx;
 }
 
-/* 用户信息区块 */
-.user-info-card {
-	display: flex;
-	align-items: center;
-	background: #fff;
-	padding: 15px;
-	margin-bottom: 15px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	border-radius: 12px;
+.content {
+  padding: 24rpx;
 }
 
-.user-avatar {
-	width: 60px;
-	height: 60px;
-	border-radius: 50%;
-	border: 2px solid #f0f0f0;
-	margin-right: 15px;
+.basic-info {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
 }
 
-.user-info-details {
-	display: flex;
-	flex: 1;
-	align-items: center;
-	justify-content: space-between;
+.seller-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.user-nickname {
-	font-size: 20px;
-	font-weight: bold;
-	color: #333;
+.seller-left {
+  display: flex;
+  align-items: center;
 }
 
-.follow-btn-wrapper {
-	display: flex;
-	align-items: center;
+.avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  margin-right: 20rpx;
 }
 
-.follow-btn-wrapper u-button {
-	width: 70px;
-	height: 32px;
-	line-height: 32px;
-	border-radius: 16px;
-	font-size: 14px;
-	text-align: center;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	transition: all 0.3s ease;
+.seller-detail {
+  display: flex;
+  flex-direction: column;
 }
 
-.follow-btn-wrapper u-button:hover {
-	transform: scale(1.05);
+.nickname {
+  font-size: 16px;
+  color: #333333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
 }
 
-/* 商品价格区块 */
-.item-price-card {
-	display: flex;
-	align-items: center;
-	background: #fff;
-	padding: 15px;
-	margin-bottom: 15px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
+.credit-info {
+  display: flex;
+  align-items: center;
 }
 
-.price-label {
-	font-size: 16px;
-	font-weight: bold;
-	color: #666;
-	margin-right: 10px;
+
+
+.follow-btn {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 24rpx;
+  border: 1px solid #EEEEEE;
+  border-radius: 32rpx;
+}
+
+.follow-text {
+  font-size: 14px;
+  color: #666666;
+  margin-left: 8rpx;
+}
+
+.follow-text.followed {
+  color: #07C160;
+}
+
+.goods-images {
+  position: relative;
+  margin-bottom: 24rpx;
+}
+
+.main-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+}
+
+
+.price-section {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.current-price {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12rpx;
+}
+
+.price-symbol {
+  font-size: 20px;
+  color: #FF4D4F;
+  font-weight: 500;
 }
 
 .price-value {
-	font-size: 24px;
-	font-weight: bold;
-	color: #ff4d4f;
+  font-size: 32px;
+  color: #FF4D4F;
+  font-weight: 600;
 }
 
-/* 商品描述区块 */
-.item-description-card {
-	background: #fff;
-	padding: 20px;
-	margin-bottom: 15px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
+.original-price {
+  display: flex;
+  align-items: center;
 }
 
-.description-label {
-	font-size: 16px;
-	color: #666;
-	margin-bottom: 10px;
-	display: block;
+.original-label {
+  font-size: 12px;
+  color: #999999;
+  margin-right: 8rpx;
 }
 
-.description-content {
-	font-size: 16px;
-	color: #333;
-	line-height: 1.6;
+.original-value {
+  font-size: 12px;
+  color: #999999;
+  text-decoration: line-through;
 }
 
-/* 商品图片展示区块 */
-.item-images-card {
-	background: #fff;
-	padding: 15px;
-	margin-bottom: 15px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
-	text-align: center;
+.description-card {
+  background-color: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
 }
 
-.item-image {
-	width: 100%;
-	max-height: 300px;
-	object-fit: contain;
-	border-radius: 10px;
+.desc-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
 }
 
-/* 收藏和聊天按钮区块（固定底部） */
-.chat-btn-wrapper {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 15px;
-	background: #fff;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
-	position: fixed; /* 固定底部 */
-	bottom: 0;
-	left: 0;
-	width: 100%; /* 满宽 */
-	z-index: 100; /* 确保按钮在其他内容之上 */
+.desc-title {
+  font-size: 16px;
+  color: #333333;
+  font-weight: 500;
+  margin-left: 8rpx;
 }
 
-/* 收藏按钮的外部包装样式 */
-.collect-btn-wrapper {
-	display: flex;
-	justify-content: space-between;
-	gap: 10px; /* 收藏按钮之间的间距 */
-	width: 45%;
-	margin-right: 15px; /* 设置右边间距 */
+.desc-content {
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 24rpx;
 }
 
-/* 聊天按钮的外部包装样式 */
-.chat-btn-wrapper-inner {
-	flex-grow: 1;
-	display: flex;
-	justify-content: flex-end;
-	margin-left: 15px; /* 设置左边间距 */
-
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
 }
 
+.tag {
+  font-size: 12px;
+  color: #666666;
+  background-color: #F5F5F5;
+  padding: 8rpx 16rpx;
+  border-radius: 4rpx;
+}
+
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  background-color: #FFFFFF;
+  border-top: 1px solid #EEEEEE;
+}
+
+.action-left {
+  display: flex;
+  gap: 48rpx;
+}
+
+.collect-btn, .report-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.collect-text, .report-text {
+  font-size: 12px;
+  color: #666666;
+  margin-top: 8rpx;
+}
+
+.collect-text.collected {
+  color: #FF4D4F;
+}
+
+.want-btn {
+  background-color: #07C160;
+  color: #FFFFFF;
+  font-size: 16px;
+  padding: 20rpx 64rpx;
+  border-radius: 32rpx;
+  border: none;
+}
+
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: #666666;
+  margin-top: 16rpx;
+}
 </style>

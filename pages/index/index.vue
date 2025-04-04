@@ -5,15 +5,7 @@
 		</view>
 
 		<view class="search">
-			<u-search
-				:showAction="true"
-				actionText="搜索"
-				:animation="true"
-				placeholder="请输入二手商品/兼职/跑腿的关键词"
-				v-model="keyword"
-				margin="8rpx"
-				@search="search"
-			></u-search>
+			<u-search :showAction="true" actionText="搜索" :animation="true" placeholder="请输入二手商品/兼职/跑腿的关键词" v-model="keyword" margin="8rpx" @search="search"></u-search>
 		</view>
 		<view class="slot">
 			<u-tabs
@@ -28,59 +20,101 @@
 			></u-tabs>
 			<view v-if="current === 0">
 				<!-- 跳蚤商品展示页 -->
-				<view class="item-list">
-					<view v-for="(item, index) in itemList" :key="index" class="item-card" @click="goToItemDetail(item)">
-						<u--image :showLoading="true" :src="item.imageUrl" width="100%" height="120px" class="item-image"></u--image>
-						<view class="item-info">
-							<text class="item-title">{{ item.title }}</text>
-							<view class="item-price-location">
-								<text class="item-price">￥{{ item.price }}</text>
-								<text class="item-location">{{ item.location }}</text>
-							</view>
-						</view>
-					</view>
-				</view>
+				    <scroll-view class="goods-container" scroll-y @scrolltolower="loadMore">
+				      <view class="goods-list">
+				        <view class="goods-item" v-for="(item, index) in itemList" :key="index" @click="goToItemDetail(item)">
+				          <image class="goods-image" :src="item.imageUrl" mode="aspectFill" />
+				          <view class="goods-info">
+				            <text class="goods-title">{{item.title}}</text>
+				            <view class="goods-bottom">
+				              <text class="goods-price">¥{{item.price}}</text>
+				              <text class="goods-location">{{item.location}}</text>
+				            </view>
+				          </view>
+				        </view>
+				      </view>
+				    <!--  <u-loadmore v-if="itemList.length > 0" :status="loadStatus" /> -->
+				    </scroll-view>
 				<u-empty :show="!itemList || itemList.length === 0" mode="data"></u-empty>
 			</view>
 			<view v-if="current === 1">
 				<!-- 兼职列表 -->
-				<view class="job-list">
-					<view v-for="(job, index) in jobList" :key="index" class="job-card" @click="goToJobDetail(job)">
-						<view class="card-content">
-							<view class="card-details">
-								<text class="job-title">{{ job.title }}</text>
-								<text class="company-name">{{ job.company }}</text>
-								<view class="job-info">
-									<text class="job-salary">薪资：{{ job.salary }}</text>
-									<text class="job-location">地点：{{ job.location }}</text>
+				<scroll-view class="content-section" scroll-y @scrolltolower="loadMore">
+					<view class="job-list">
+						<view v-for="(job, index) in jobList" :key="index" class="job-card" @click="goToJobDetail(job)">
+							<view class="job-header">
+								<text class="job-title">{{job.title}}</text>
+								<text class="job-salary">{{job.salary}}元</text>
+							</view>
+							<view class="company-info">
+								<text class="company-name">{{job.company}}</text>
+								<view class="job-tags">
+								  <view 
+								    class="settlement-tag"
+								    :class="'type-' + job.job_type"
+								  >
+								    {{ getSettlementTypeLabel(job.job_type) }}
+								  </view>
 								</view>
-								<!-- 结算方式标签 -->
-								<view class="settlement-type-wrapper">
-									<u-tag :type="getSettlementTypeTag(job.job_type)" :text="getSettlementTypeLabel(job.job_type)" size="mini" class="settlement-type"></u-tag>
+							</view>
+							<view class="job-footer">
+								<view class="location-info">
+									<u-icon name="map" size="28" color="#666" />
+									<text class="location-text">{{job.location}}</text>
 								</view>
+								<u-icon name="arrow-right" size="28" color="#999" />
 							</view>
 						</view>
 					</view>
-				</view>
-				<u-empty :show="!jobList || jobList.length === 0" mode="data"></u-empty>
+					<u-empty v-if="jobList.length === 0" text="暂无数据" />
+				</scroll-view>
 			</view>
 			<view v-if="current === 2">
-				<!-- 跑腿任务列表 -->
-				<view class="delivery-list">
-					<view v-for="(task, index) in taskList" :key="index" class="task-card" @click="goToTaskDetail(task)">
-						<view class="card-content">
-							<view class="task-info">
-								<text class="task-title">{{ task.title }}</text>
-								<view class="task-details">
-									<text class="task-location">起点：{{ task.pickup_location }}</text>
-									<text class="task-destination">终点：{{ task.delivery_location }}</text>
-									<text class="task-price">报酬：￥{{ task.reward }}</text>
+				<!-- 跑腿任务列表（使用AI的UI结构） -->
+				<scroll-view scroll-y class="content-wrapper">
+					<view class="delivery-list">
+						<view 
+							v-for="(task, index) in taskList" 
+							:key="index" 
+							class="task-card"
+							@click="goToTaskDetail(task)"
+						>
+							<view class="task-header">
+								<view class="task-title">{{ task.title }}</view>
+								<view :class="['task-status', 'status-' + task.status]">
+								      {{ getTaskStatusText(task.status) }}
+								    </view>
+							</view>
+							<view class="task-content">
+								<view class="location-item">
+									<u-icon name="map" size="28" color="#666666"/>
+									<text class="location-text">{{ task.pickup_location }}</text>
+								</view>
+								<view class="location-item">
+									<u-icon name="arrow-right" size="28" color="#666666"/>
+									<text class="location-text">{{ task.delivery_location }}</text>
+								</view>
+							</view>
+							<view class="task-footer">
+								<view class="task-info">
+									<view class="task-time">
+										<u-icon name="calendar" size="28" color="#999999"/>
+										<text class="time-text">{{ formatTime(task.created_time) }}</text>
+									</view>
+									<view class="task-distance">
+										<u-icon name="map" size="28" color="#999999"/>
+										<text class="distance-text">{{ task.distance }}km</text>
+									</view>
+								</view>
+								<view class="task-price">
+									<text class="price-symbol">¥</text>
+									<text class="price-value">{{ task.reward }}</text>
 								</view>
 							</view>
 						</view>
 					</view>
-				</view>
-				<u-empty :show="!taskList || taskList.length === 0" mode="data"></u-empty>
+					<u-empty v-if="!taskList.length" text="暂无跑腿任务" />
+				</scroll-view>
 			</view>
 		</view>
 		<u-toast ref="uToast" />
@@ -111,7 +145,8 @@ export default {
 			itemList: [],
 			jobList: [],
 			taskList: [],
-			keyword: ''
+			keyword: '',
+			loadStatus: 'loadmore'
 		};
 	},
 	onLoad() {
@@ -163,7 +198,7 @@ export default {
 			const res = await uniCloud.callFunction({
 				name: 'getItemList',
 				data: {
-					userId: this.userInfo.user_id,
+					userId: userInfo.user_id,
 					status: 0, // 查询在卖商品
 					location: 'index'
 				}
@@ -277,6 +312,21 @@ export default {
 					return '日结';
 			}
 		},
+		// 获取任务状态文本
+		getTaskStatusText(status) {
+			const statusMap = {
+				'0': '待接单',
+				'1': '进行中',
+				'2': '已完成'
+			};
+			return statusMap[status] || '未知状态';
+		},
+		// 格式化时间
+		formatTime(timestamp) {
+			if (!timestamp) return '';
+			const date = new Date(timestamp);
+			return `${date.getMonth()+1}月${date.getDate()}日 ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+		},
 		async search(e) {
 			const res = await uniCloud.callFunction({
 				name: 'searchByKeyWord',
@@ -306,196 +356,337 @@ export default {
 					this.itemList = items;
 				} else if (this.current === 1) {
 					// 查询兼职
-					res = res.result.data;
+					this.jobList = res.result.data;
 				} else if (this.current === 2) {
 					// 查询跑腿任务
-					res = res.result.data;
+					this.taskList = res.result.data;
 				}
 			} else {
-				throw new Error(res.result.message || '查询二手商品失败');
+				uni.showToast({
+					icon: 'none',
+					title: res.result.message || '查询失败'
+				});
 			}
+		},
+		loadMore() {
+			console.log('加载更多数据');
+			// 这里可以添加加载更多数据的逻辑
 		}
 	}
 };
 </script>
 
 <style scoped>
-/* 整体布局样式 */
-.container {
-	background-color: #f7f8fa;
-	padding: 20px 2%; /* 保持左右内边距，使内容紧凑 */
+/* 顶部搜索栏 */
+.search {
+	margin: 7px;
 }
 
-/* 跳蚤商品页面样式 */
-.item-list {
+/* 导航栏图标 */
+.nav-icons {
 	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between; /* 确保两列均匀分布 */
+	justify-content: space-around;
 	padding: 10px 0;
-	gap: 6px; /* 保持卡片间距，紧凑排布 */
-}
-
-.item-card {
-	width: 49%; /* 保持紧凑的宽度，确保一行显示两个卡片，保留细小间隙 */
-	margin-bottom: 10px; /* 保持底部间距 */
-	border-radius: 8px; /* 保持圆角，类似闲鱼风格 */
-	padding: 8px; /* 保持内边距 */
 	background-color: #fff;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 较轻的阴影，闲鱼风格 */
-	transition: transform 0.2s; /* 添加轻微 hover 动画 */
 }
 
-.item-card:hover {
-	transform: scale(1.02); /* 轻微放大效果，增强交互感 */
-}
-
-.item-image {
-	width: 100%;
-	height: 130px; /* 扩大图片高度，突出商品 */
-	border-radius: 6px; /* 图片圆角与卡片一致 */
-	object-fit: cover; /* 保持图片覆盖，适合大多数比例 */
-}
-
-.item-info {
-	margin-top: 8px; /* 微调标题和图片的间距，适应较大图片 */
-}
-
-.item-title {
-	font-size: 14px; /* 增大标题字体，保持清晰但紧凑 */
-	font-weight: 500; /* 稍轻的粗体，类似闲鱼 */
-	color: #333;
-	line-height: 1.3; /* 微调行高，适应较大字体 */
-	white-space: nowrap; /* 防止标题换行 */
-	overflow: hidden; /* 超出部分隐藏 */
-	text-overflow: ellipsis; /* 超出部分显示省略号 */
-}
-
-.item-price-location {
+.nav-icon {
 	display: flex;
-	justify-content: space-between;
+	flex-direction: column;
 	align-items: center;
-	margin-top: 6px; /* 微调间距，适应较大字体 */
+	font-size: 12px;
+	color: #666;
 }
 
-.item-price {
-	font-size: 16px; /* 增大价格字体，保持醒目 */
-	color: #ff6b6b; /* 微调为更柔和的红色，协调配色 */
-	font-weight: bold;
+.nav-icon img {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	margin-bottom: 5px;
 }
 
-.item-location {
-	font-size: 12px; /* 增大位置字体，保持清晰 */
-	color: #999;
+
+/* 二手商品列表样式 - Flex 布局 */
+.goods-container {
+  padding: 24rpx;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-/* 兼职页面样式 */
+.goods-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.goods-item {
+  width: calc(50% - 12rpx); /* 关键：精确计算宽度 */
+  margin-bottom: 24rpx;
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 图片和商品信息样式保持不变 */
+.goods-image {
+  width: 100%;
+  height: 340rpx;
+  background: #f7f7f7;
+}
+
+.goods-info {
+  padding: 16rpx;
+}
+
+.goods-title {
+  font-size: 28rpx;
+  color: #333333;
+  line-height: 40rpx;
+  height: 80rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.goods-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+.goods-price {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.goods-location {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 兼职列表样式 */
+.content-section {
+	flex: 1;
+	overflow: auto;
+}
+
 .job-list {
-	padding: 10px;
+	padding: 20rpx 32rpx;
 }
 
 .job-card {
-	background-color: #fff;
-	margin-bottom: 15px;
-	border-radius: 12px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
+	background-color: #FFFFFF;
+	border-radius: 12rpx;
+	padding: 24rpx;
+	margin-bottom: 20rpx;
+	box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
-.card-content {
-	padding: 15px;
-}
-
-.card-details {
-	flex: 1;
+.job-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16rpx;
 }
 
 .job-title {
-	font-size: 18px;
-	font-weight: bold;
-	color: #333;
-}
-
-.company-name {
-	font-size: 14px;
-	color: #999;
-	margin-top: 5px;
-}
-
-.job-info {
-	margin-top: 10px;
-	display: flex;
-	justify-content: space-between;
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333333;
 }
 
 .job-salary {
-	font-size: 16px;
-	color: #f44336;
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #FF6B6B;
 }
 
-.job-location {
-	font-size: 14px;
-	color: #666;
-}
-
-.settlement-type-wrapper {
-	margin-top: 10px;
+.company-info {
 	display: flex;
-	justify-content: flex-start;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 16rpx;
 }
 
-.settlement-type {
-	display: inline-block;
-	padding: 4px 8px;
-	border-radius: 4px;
-	font-size: 12px;
-	background-color: #007bff;
-	color: #fff;
+.company-name {
+	font-size: 28rpx;
+	color: #666666;
 }
 
-/* 跑腿页面样式 */
+.job-tags {
+	display: flex;
+	gap: 10rpx;
+}
+
+.settlement-tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: white;
+}
+
+/* 日结样式 */
+.settlement-tag.type-0 {
+  background-color: #FF9500; /* 橙色 */
+}
+
+/* 周结样式 */
+.settlement-tag.type-1 {
+  background-color: #34C759; /* 绿色 */
+}
+
+/* 月结样式 */
+.settlement-tag.type-2 {
+  background-color: #007AFF; /* 蓝色 */
+}
+
+.job-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.location-info {
+	display: flex;
+	align-items: center;
+	gap: 4rpx;
+}
+
+.location-text {
+	font-size: 26rpx;
+	color: #666666;
+}
+
+.job-card:active {
+	opacity: 0.8;
+	transform: scale(0.98);
+	transition: all 0.2s;
+}
+
+/* 跑腿任务列表样式（使用AI的样式） */
+.content-wrapper {
+	flex: 1;
+	overflow: auto;
+}
+
 .delivery-list {
-	padding: 10px;
+	padding: 20rpx;
 }
 
 .task-card {
-	background-color: #fff;
-	margin-bottom: 15px;
-	border-radius: 12px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
+	margin-bottom: 20rpx;
+	padding: 30rpx;
+	background-color: #ffffff;
+	border-radius: 16rpx;
+	box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
-.card-content {
-	padding: 15px;
+.task-card:active {
+	transform: scale(0.98);
+	transition: transform 0.2s;
 }
 
-.task-info {
-	margin-bottom: 10px;
+.task-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
 }
 
 .task-title {
-	font-size: 18px;
-	font-weight: bold;
-	color: #333;
-	margin-bottom: 10px;
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333333;
 }
 
-.task-details {
+.task-status {
+	padding: 4rpx 16rpx;
+	border-radius: 20rpx;
+	font-size: 24rpx;
+}
+
+.task-status.status-0 {
+	background-color: #fff5e6;
+	color: #ff9900;
+}
+
+.task-status.status-1 {
+	background-color: #e6f7ff;
+	color: #1890ff;
+}
+
+.task-status.status-2 {
+	background-color: #f6ffed;
+	color: #52c41a;
+}
+
+.task-content {
+	margin-bottom: 20rpx;
+}
+
+.location-item {
 	display: flex;
-	flex-direction: column;
-	gap: 8px; /* 增加间距 */
+	align-items: center;
+	margin-bottom: 16rpx;
 }
 
-.task-location,
-.task-destination,
-.task-price {
-	font-size: 14px;
-	color: #666;
+.location-item:last-child {
+	margin-bottom: 0;
+}
+
+.location-text {
+	margin-left: 12rpx;
+	font-size: 28rpx;
+	color: #666666;
+}
+
+.task-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 20rpx;
+	padding-top: 20rpx;
+	border-top: 2rpx solid #f5f5f5;
+}
+
+.task-info {
+	display: flex;
+	align-items: center;
+}
+
+.task-time, .task-distance {
+	display: flex;
+	align-items: center;
+	margin-right: 24rpx;
+}
+
+.time-text, .distance-text {
+	margin-left: 8rpx;
+	font-size: 24rpx;
+	color: #999999;
 }
 
 .task-price {
-	font-size: 16px;
-	color: #f44336;
-	font-weight: bold;
+	display: flex;
+	align-items: baseline;
+}
+
+.price-symbol {
+	font-size: 24rpx;
+	color: #ff4d4f;
+}
+
+.price-value {
+	font-size: 36rpx;
+	font-weight: 600;
+	color: #ff4d4f;
+	margin-left: 4rpx;
 }
 </style>

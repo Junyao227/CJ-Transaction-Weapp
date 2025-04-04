@@ -30,6 +30,11 @@
 			"title": "报酬",
 			"description": "报酬"
 		},
+		"distance": {
+			"bsonType": "double",
+			"title": "距离",
+			"description": "距离"
+		},
 
 		"pickup_location": {
 			"bsonType": "string",
@@ -78,8 +83,7 @@
 			"title": "逻辑删除",
 			"description": "逻辑删除",
 			"defaultValue": 0,
-			"enum": [
-				{
+			"enum": [{
 					"text": "未删除",
 					"value": 0
 				},

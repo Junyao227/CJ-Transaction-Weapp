@@ -11,15 +11,14 @@
 		></u-navbar>
 
 		<!-- logo -->
-		<view class="logo-wrap" v-if="pageStatus == 'home' || pageStatus == 'getWxRole' || pageStatus == 'loginByCode'">
+		<view class="logo-wrap" v-if="pageStatus == 'home' || pageStatus == 'getWxRole'">
 			<image class="logo" src="../../static/app/logo.png"></image>
-			<view class="app-name">Shop Weapp</view>
+			<view class="app-name">校园惠</view>
 		</view>
 
 		<!-- 默认登录页面显示 -->
 		<view style="width: 100%" v-if="pageStatus == 'home'">
 			<view class="text-area" @click="loginByWx">微信登录</view>
-			<view class="login" @click="loginByCode">手机号登录/注册</view>
 		</view>
 
 		<!-- 微信授权登录，获取用户信息 -->
@@ -40,27 +39,8 @@
 			<u-button type="success" open-type="getPhoneNumber" @getphonenumber="decryptPhoneNumber">微信用户一键登录</u-button>
 		</view>
 
-		<!-- 手机号验证码登录 -->
-		<view class="loginSmsCode" v-if="pageStatus == 'loginByCode'">
-			<u-form :model="loginCodeForm" ref="loginCodeForm">
-				<u-form-item :border-bottom="true">
-					<u-input v-model="loginCodeForm.phone" placeholder="请输入手机号" :placeholder-style="{ color: '#ccc', fontSize: '30rpx' }" />
-				</u-form-item>
-				<u-form-item :border-bottom="true">
-					<view style="display: flex; justify-content: space-between; align-items: center">
-						<u-input style="width: 60%" v-model="loginCodeForm.smsCode" placeholder="请输入验证码" :placeholder-style="{ color: '#ccc', fontSize: '30rpx' }" />
-						<view class="smscode" @click="getCode" v-if="!codeOPS.isGetting">{{ codeOPS.getted ? '重新获取验证码' : '获取验证码' }}</view>
-						<view class="smscode" v-else>{{ codeOPS.countDownTime }}s</view>
-					</view>
-				</u-form-item>
-			</u-form>
-			<view style="padding-top: 64rpx">
-				<u-button :disabled="!loginCodeForm.phone || !loginCodeForm.smsCode" type="primary" shape="circle" @click="login('code')">登录</u-button>
-			</view>
-		</view>
-
 		<!-- 协议勾选 -->
-		<view class="agree" v-if="pageStatus == 'home' || pageStatus == 'getWxRole' || pageStatus == 'loginByCode'">
+		<view class="agree" v-if="pageStatus == 'home' || pageStatus == 'getWxRole'">
 			<view class="agree_img" @click="changeAgreeFlag" v-show="!agree_flag"><image src="../../static/operate/check.png"></image></view>
 			<view class="agree_img" @click="changeAgreeFlag" v-show="agree_flag"><image src="../../static/operate/checked.png"></image></view>
 			<view class="agree_text">
@@ -76,10 +56,6 @@ import FunUniappTheme from '@/theme.scss';
 export default {
 	data() {
 		return {
-			// 页面状态，默认为 home
-			// getWxRole：获取微信权限页，loginByWx：微信授权登录页
-			// loginByCode：手机号+验证码登录页，loginByPwd：手机号+密码登录
-			// forgetPwd：找回密码页面，resetPwd，重置密码页面
 			pageStatus: 'home',
 			// 协议是否勾选
 			agree_flag: false,
@@ -88,52 +64,11 @@ export default {
 			// openid
 			openId: '',
 			// 系统内用户信息
-			userInfo: {},
-			// 手机号验证码登录表单
-			loginCodeForm: {
-				phone: null,
-				smsCode: null
-			},
-			// 表单验证
-			loginCodeFormRules: {
-				phone: [
-					{
-						required: true,
-						message: '请输入手机号',
-						trigger: ['change', 'blur']
-					},
-					{
-						validator: (rule, value, callback) => {
-							return this.$u.test.mobile(value);
-						},
-						message: '手机号码不正确',
-						trigger: ['change', 'blur']
-					}
-				],
-				smsCode: [
-					{
-						required: true,
-						message: '请输入验证码',
-						trigger: ['change', 'blur']
-					}
-				]
-			},
-			// 获取验证码倒计时
-			codeOPS: {
-				countDownTime: 60,
-				isGetting: false,
-				getted: false,
-				timer: null
-			}
+			userInfo: {}
 		};
 	},
 	onLoad() {
 		console.log(FunUniappTheme);
-	},
-	onReady() {
-		if (this.pageStatus == 'loginByCode') {
-			this.$refs.loginCodeForm.setRules(this.loginCodeFormRules);
-		}
 	},
 	methods: {
 		// 勾选/取消用于协议
@@ -155,13 +90,11 @@ export default {
 
 		// 自定义navbar的返回方法
 		navbarBack() {
-			if (this.pageStatus == 'getWxRole' || this.pageStatus == 'loginByWx' || this.pageStatus == 'loginByCode') {
+			if (this.pageStatus == 'getWxRole' || this.pageStatus == 'loginByWx' ) {
 				this.pageStatus = 'home';
 			} else if (this.pageStatus == 'forgetPwd' || this.pageStatus == 'resetPwd') {
 				this.pageStatus = 'loginByPwd';
-			} else if (this.pageStatus == 'loginByPwd') {
-				this.pageStatus = 'loginByCode';
-			}
+			} 
 		},
 
 		// 微信授权
@@ -204,6 +137,7 @@ export default {
 				provider: 'weixin',
 				onlyAuthorize: true,
 				success: (loginRes) => {
+					console.log("loginRes",loginRes);
 					callBack(loginRes.code);
 				},
 				fail(e) {
@@ -244,6 +178,7 @@ export default {
 				desc: '获取你的昵称、头像',
 				success: function (data) {
 					uni.setStorageSync('APP_WX_USERINFO', data);
+					console.log("APP_WX_USERINFO",data);
 					$this.wxLoginUserInfo = data;
 					$this.pageStatus = 'loginByWx';
 					callBack();
@@ -354,62 +289,6 @@ export default {
 			this.$u.api.loginByOpenId(openid).then((res) => {
 				this.userInfo = res;
 			});
-		},
-
-		// 手机号+验证码登录
-		loginByCode() {
-			this.pageStatus = 'loginByCode';
-		},
-
-		// 获取验证码
-		getCode() {
-			if (!this.loginCodeForm.phone) {
-				uni.showToast({
-					icon: 'none',
-					title: '请输入手机号'
-				});
-				return;
-			}
-			uni.showLoading({
-				title: '正在获取验证码'
-			});
-			uni.hideLoading();
-			this.codeOPS.isGetting = true;
-			this.codeOPS.getted = true;
-			this.codeOPS.timer = setInterval(() => {
-				if (this.codeOPS.countDownTime > 0 && this.codeOPS.countDownTime <= 60) {
-					this.codeOPS.countDownTime--;
-				} else {
-					this.resetCountDown(false);
-				}
-			}, 1000);
-		},
-
-		// 倒计时初始化
-		resetCountDown(isInit) {
-			clearInterval(this.codeOPS.timer);
-			this.codeOPS = {
-				countDownTime: 60,
-				isGetting: false,
-				getted: isInit ? false : true,
-				timer: null
-			};
-			this.$forceUpdate();
-		},
-
-		// 手机号登录方法，分为验证码和密码两种
-		login(type) {
-			uni.setStorageSync('IS_LOGIN', true);
-			uni.reLaunch({
-				url: '/pages/index/index'
-			});
-			// if (type == 'code') {
-			// 	this.$refs.loginCodeForm.validate(valid => {
-			// 		if (valid) {
-
-			// 		}
-			// 	});
-			// }
 		}
 	}
 };

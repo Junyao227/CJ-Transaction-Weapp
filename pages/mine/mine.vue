@@ -1,11 +1,15 @@
 <template>
 	<view class="my-page">
-		<!-- 用户信息部分 -->
-		<view class="user-info">
-			<u-avatar size="80" :src="userInfo.avatar" />
-			<view class="user-details">
-				<text class="user-name">{{ userInfo.nickname }}</text>
-				<text class="user-id">ID: {{ userInfo.user_id }}</text>
+		<!-- 用户信息区 -->
+		<view class="user-section">
+			<view class="user-info">
+				<view class="avatar-wrapper">
+					<image class="avatar" :src="userInfo.avatar" mode="aspectFill" />
+				</view>
+				<view class="user-detail">
+					<text class="nickname">{{ userInfo.nickname || '未设置昵称' }}</text>
+					<text class="user-id">ID: {{ userInfo.user_id }}</text>
+				</view>
 			</view>
 		</view>
 
@@ -13,17 +17,19 @@
 		<view class="user-count"><LabelCount :ops="mineCountOps"></LabelCount></view>
 
 		<!---滑动tab-->
-
-		<u-tabs
-			name="text"
-			:list="tabsData"
-			:current="current"
-			@change="change"
-			:activeStyle="default_activeColor"
-			:inactiveStyle="default_inactiveColor"
-			lineHeight="10"
-			lineWidth="30"
-		></u-tabs>
+		<view class="tab">
+			<u-tabs
+				name="text"
+				:list="tabsData"
+				:current="current"
+				@change="change"
+				:activeStyle="default_activeColor"
+				:inactiveStyle="default_inactiveColor"
+				lineHeight="10"
+				lineWidth="30"
+			></u-tabs>
+		</view>
+		
 
 		<!-- 跳蚤 -->
 		<view class="order-nav" v-if="current === 0">
@@ -220,66 +226,101 @@ export default {
 
 <style scoped>
 .my-page {
-	padding: 20px;
+	padding: 0;
+	background-color: #f7f7f7;
+	padding-bottom: 30rpx;
 }
 
-/* 用户信息部分 */
+/* 用户信息部分 - 无重叠 */
+.user-section {
+	background: linear-gradient(180deg, #2979ff 0%, #5094ff 100%);
+	padding: 40rpx 30rpx 30rpx; /* 减少底部内边距 */
+}
+
+/* 用户数据部分 - 取消负边距 */
+.user-count {
+	background-color: #fff;
+	margin: 10rpx 25rpx 20rpx; /* 改为正常外边距 */
+}
+.tab {
+	background-color: #fff;
+	margin: 0 25rpx 5rpx; /* 改为正常外边距 */
+}
+
+/* 订单导航部分 */
+.order-nav {
+	background-color: #fff;
+	margin: 0 25rpx 20rpx;
+}
+
+/* 条形布局部分 */
+.cell-container {
+	background-color: #fff;
+	border-radius: 16rpx;
+	overflow: hidden;
+	margin: 0 25rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 用户信息细节调整 */
 .user-info {
 	display: flex;
 	align-items: center;
-	margin-bottom: 30px;
+	margin-bottom: 30rpx; /* 增加与数据卡片的间距 */
+}
+
+.avatar-wrapper {
+	width: 120rpx;
+	height: 120rpx;
+	margin-right: 30rpx;
+}
+
+.avatar {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	border: 4rpx solid #ffffff;
 	background-color: #fff;
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.user-info u-avatar {
-	margin-right: 20px;
-}
-
-.user-details {
-	flex: 1;
-}
-
-.user-name {
-	font-size: 18px;
+.nickname {
+	font-size: 36rpx;
+	color: #ffffff;
 	font-weight: bold;
+	display: block;
+	margin-bottom: 10rpx;
 }
 
 .user-id {
-	font-size: 14px;
-	color: #888;
+	font-size: 24rpx;
+	color: rgba(255, 255, 255, 0.85);
 }
 
-/* 栅格布局 */
-.grid-container {
-	margin-bottom: 20px; /* 给栅格布局增加底部间隔 */
+/* 单元格样式 */
+.cell-group {
+	margin: 0;
 }
 
-.grid-section .u-grid-item {
-	background-color: #f5f5f5; /* 背景色 */
-	border-radius: 10px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
-	padding: 20px;
-	text-align: center;
+.cell-group /deep/ .u-cell {
+	padding: 28rpx 32rpx;
+	border-bottom: 1rpx solid #f5f5f5;
 }
 
-.grid-text {
-	display: block;
-	margin-top: 8px;
+.cell-group /deep/ .u-cell:last-child {
+	border-bottom: none;
 }
 
-/* 我的条形布局部分 */
-.cell-container {
-	margin-top: 20px; /* 增加顶部间隔 */
+.cell-group /deep/ .u-cell__title-text {
+	font-size: 28rpx;
+	color: #333;
 }
 
-u-cell {
-	margin-bottom: 10px;
-	background-color: #fff; /* 设置条形布局背景颜色 */
-	border-radius: 10px; /* 圆角效果 */
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
-	padding: 15px;
+.cell-group /deep/ .u-icon {
+	margin-right: 20rpx;
+}
+
+/* 底部安全区域 */
+.safe-area-inset-bottom {
+	padding-bottom: env(safe-area-inset-bottom);
 }
 </style>
